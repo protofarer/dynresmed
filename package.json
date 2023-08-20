@@ -1,0 +1,28 @@
+{
+  "name": "resdynmed",
+  "version": "0.0.1",
+  "description": "A program that facilitates planning for resonant dynamic meditation sessions.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "meditation",
+    "schedule",
+    "planning",
+    "lunar",
+    "noetics"
+  ],
+  "author": "kenny baron",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.2"
+  },
+  "dependencies": {
+    "suncalc": "^1.9.0"
+  }
+}
