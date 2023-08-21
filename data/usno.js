@@ -310,28 +310,23 @@ let quarters = {
 	'Last Quarter': 3
 }
 
-const table = x.phasedata.map(x => {
-	return {
-		...x,
-		phase: quarters[x.phase]
-	}
-});
+import fs from 'fs';
 
-console.log(table)
+for (let year = 2023; year <= 2024; year++) {
+	let res = await fetch(`https://aa.usno.navy.mil/api/moon/phases/year?year=${year}`);
+	let o = await res.json();
+	const table = o.phasedata.map(x => {
+		return {
+			...x,
+			phase: quarters[x.phase]
+		}
+	});
 
-
-// import fs from 'fs';
-// fs.writeFile(`${year}.json`, JSON.stringify(table), (err) => {
-// 	if (err) throw err;
-// 	console.log('The file has been saved!');
-// });
-
-
-
-// for (let i = 2023; i <= 2024; i++) {
-// 	let res = await fetch(`https://aa.usno.navy.mil/api/moon/phases/year?year=${i}`);
-// 	let o = await res.json();
-// 	console.log(o);
-// 	console.log(`no. per year`, o.phasedata.length)
+	fs.writeFile(`data/table/${year}.json`, JSON.stringify(table), (err) => {
+		if (err) throw err;
+		console.log('The file has been saved!');
+	});
 	
-// }
+}
+
+const input = 2024;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moon Phases for a Year</title>
+    <script src="index.js" async></script>
     <style>
         /* Add your CSS styling here */
         table {
@@ -21,11 +22,8 @@
     </style>
 </head>
 <body>
-    <label for="yearInput">Enter Year:</label>
-    <input type="text" id="yearInput" placeholder="e.g., 2023">
-    <button onclick="fetchData()">Get Phases</button>
-
-    <table id="phasesTable">
+    <table id="phasesTable0">
+        <caption></caption>
         <thead>
             <tr>
                 <th>Full Moon</th>
@@ -36,49 +34,19 @@
         <tbody></tbody>
     </table>
 
-    <script>
-				// TODO get JSON data from file for that year
-        const phaseMap = new Map();  // Your data should be stored here
+    <!-- <hr />
 
-        function fetchData() {
-            const year = document.getElementById('yearInput').value;
-            const tableBody = document.querySelector('#phasesTable tbody');
-            tableBody.innerHTML = '';  // Clear previous data
+    <table id="phasesTable1">
+        <caption></caption>
+        <thead>
+            <tr>
+                <th>Full Moon</th>
+                <th>Last Quarter</th>
+                <th>New Moon</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table> -->
 
-            const fullMoon = [];
-            const lastQuarter = [];
-            const newMoon = [];
-
-            for (const [key, phase] of phaseMap.entries()) {
-                if (!key.startsWith(year)) continue;
-
-                switch (phase) {
-                    case 'Full Moon':
-                        fullMoon.push(key);
-                        break;
-                    case 'Last Quarter':
-                        lastQuarter.push(key);
-                        break;
-                    case 'New Moon':
-                        newMoon.push(key);
-                        break;
-                }
-            }
-
-            const maxRows = Math.max(fullMoon.length, lastQuarter.length, newMoon.length);
-            
-            for (let i = 0; i < maxRows; i++) {
-                const row = document.createElement('tr');
-
-                row.innerHTML = `
-                    <td>${fullMoon[i] || ''}</td>
-                    <td>${lastQuarter[i] || ''}</td>
-                    <td>${newMoon[i] || ''}</td>
-                `;
-                
-                tableBody.appendChild(row);
-            }
-        }
-    </script>
 </body>
 </html>
