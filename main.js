@@ -7,6 +7,11 @@
 // 3. Time: 15 min before sunset
 // 4. Show the next 10 Resonance Points and mark them with respective Session Number
 
+
+// TODO
+// how many phases can I query from usno.navy.mil API? next 100 years?
+// if not many, then just query as needed, and save to file
+
 import SunCalc from 'suncalc';
 
 // per suncalc
