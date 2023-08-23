@@ -5,8 +5,6 @@
 
 import createSessions from 'lib';
 
-const DIR_SUNSET = "sourcedata/dailysunset";
-const DIR_LUNARPHASE = "sourcedata/lunarphase";
 const DIR_SESSIONS = "data/sessions";
 
 // read from sourcedata/lunarphase/2023.json the next full moon date and time
@@ -17,4 +15,4 @@ const DIR_SESSIONS = "data/sessions";
 
 const now = new Date();
 const currYear = now.getFullYear();
-createSessions(currYear, DIR_SUNSET, DIR_LUNARPHASE, DIR_SESSIONS);
+createSessions(currYear, DIR_SESSIONS);

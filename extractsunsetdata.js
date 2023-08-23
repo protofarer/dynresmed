@@ -8,9 +8,11 @@ import path from 'path';
 const DIR_ALL = "sourcedata/dailysunmoon";
 const DIR_SUNSET = "sourcedata/dailysunset";
 
-const files = fs.readdirSync(DIR_ALL);
+// const files = fs.readdirSync(DIR_ALL);
 
-files.forEach(file => {
+process("2022.json");
+
+function process(file) {
 	const filePath = path.join(DIR_ALL, file);
 
 	// check if json
@@ -35,5 +37,10 @@ files.forEach(file => {
 	} catch (err) {
 		console.error(`Error processing file ${file}: ${err.message}`);
 	}
+}
 
-});
+function processAll() {
+	files.forEach(file => {
+		process(file);
+	});
+}

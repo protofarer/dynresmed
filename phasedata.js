@@ -16,9 +16,11 @@ const QUARTERS = {
 	'Last Quarter': 3
 };
 
+const START_YEAR = 2022;
+const END_YEAR = 2022;
 const DIR = "sourcedata/lunarphase";
 
-for (let year = 2023; year <= 2100; year++) {
+for (let year = START_YEAR; year <= START_YEAR; year++) {
 	let res = await fetch(`https://aa.usno.navy.mil/api/moon/phases/year?year=${year}`);
 	let o = await res.json();
 	const table = o.phasedata.map(x => {

@@ -13,7 +13,8 @@ import fs from 'fs';
 // COORDS "coords=<lat,long>" eg "coords=33.71,-10.445"
 // TZ (optional) "tz=-5"
 
-const START_YEAR = 2024;
+const START_YEAR = 2022;
+const END_YEAR = 2022;
 const MY_COORDS = "25.710583,-80.441457";
 const DIR_ALL = "sourcedata/dailysunmoon";
 

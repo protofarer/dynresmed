@@ -1,3 +1,5 @@
+import './style.css';
+
 window.addEventListener("load", async () => {
 	const currYear = new Date().getFullYear();
 	const buttons = document.querySelectorAll("button");
@@ -17,7 +19,8 @@ window.addEventListener("load", async () => {
 async function setData(addYears=0) {
 	const year = new Date().getFullYear() + addYears;
 
-	const rawTable = await fetch(`data/table/${year}.json`);
+	// TODO replace with production json
+	const rawTable = await fetch(`data/lunarphase/${year}.json`);
 	const table = await rawTable.json()
 	// const rawData = fs.readFileSync(`data/table/${year}.json`);
 	// const table = JSON.parse(rawData);
