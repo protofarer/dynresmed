@@ -2,6 +2,8 @@ import fs from 'fs';
 
 const DIR_SUNSET = "sourcedata/dailysunset";
 const DIR_PHASE = "sourcedata/lunarphase";
+const NEXT_YEAR_SUNSET_LIMIT = 8;
+const PREV_YEAR_SUNSET_LIMIT = 11; // 11th sunset not a valid result, only used in findFirstSunsetAfter calculation
 
 export function createSessions(year, dir_sessions) {
 
@@ -105,7 +107,6 @@ export function findNearestSunset(date, sunsets) {
 	return sunsetNearest;
 }
 
-
 export function findSunsetDatetimeByDay(date, sunsets) {
 	// use for sunsets found by some multiple of T_1 or T_2 from another sunset
 	const dateString = date.toJSON().slice(0,10);
@@ -113,7 +114,7 @@ export function findSunsetDatetimeByDay(date, sunsets) {
 	const sunsetTime = sunsets?.[dateString];
 
 	if (!sunsetTime) {
-		console.error(`No sunset found for date ${dateString}`);
+		// console.error(`No sunset found for date ${dateString}`);
 		return null;
 	}
 
@@ -126,22 +127,43 @@ export function makeDateFromSunsetObject(obj) {
 		return new Date(`${obj.year}-${month}-${day}T${obj.time}`);
 }
 
-export function findFirstSunsetAfter(date, sunsets) {
-	// date argument must be within year
+function findDateByDaysFrom(date, days) {
+	// days can be negative
+	date.setDate(date.getDate() + days);
+	return date;
+}
+
+export function findFirstSunsetAfter(date, sunsets, year) {
 	const dateString = date.toJSON().slice(0,10);
-	
 	const sunsetTimeCurrent = sunsets?.[dateString];
+
+	// out of range
+	if (!sunsetTimeCurrent) {
+		return null;
+	}
+
 	const sunsetDatetimeCurrent = new Date(`${dateString}T${sunsetTimeCurrent}Z`);
+	const prevYearSunsetLimitDay = findDateByDaysFrom(new Date(`${year}-01-01`), -PREV_YEAR_SUNSET_LIMIT + 1);
+
+	// out of range: result date falls on date excluded from calculation data set
+	if(sunsetDatetimeCurrent > date) {
+		if (sunsetDatetimeCurrent < prevYearSunsetLimitDay) {
+			return null;
+		}
+		return sunsetDatetimeCurrent;
+	}
 
 	const dateDayAfter = new Date(date);
 	dateDayAfter.setDate(date.getDate() + 1);
 	const dateStringDayAfter = dateDayAfter.toJSON().slice(0,10);
 	const sunsetTimeDayAfter = sunsets?.[dateStringDayAfter];
+
+	// out of range
+	if (!sunsetTimeDayAfter) {
+		return null;
+	}
 	const sunsetDatetimeDayAfter = new Date(`${dateStringDayAfter}T${sunsetTimeDayAfter}Z`);
 
-	if (sunsetDatetimeCurrent > date) {
-		return sunsetDatetimeCurrent;
-	}
 	return sunsetDatetimeDayAfter;
 }
 
@@ -218,20 +240,51 @@ export function getSunsetData(year) {
 
 	// needed for calculations near edges of the year
 	const dataPrev = read(`${DIR_SUNSET}/${year-1}.json`);
-	const prevYearLast2Sunsets = {
-		[`${year-1}-12-30`]: dataPrev[`${year-1}-12-30`],
-		[`${year-1}-12-31`]: dataPrev[`${year-1}-12-31`]
-	};
+	let prevYearDayCounter = new Date(`${year-1}-12-31`);
+
+	// const prevYearLast10Sunsets = {
+	// 	[`${year-1}-12-22`]: dataPrev[`${year-1}-12-22`],
+	// 	[`${year-1}-12-23`]: dataPrev[`${year-1}-12-23`],
+	// 	[`${year-1}-12-24`]: dataPrev[`${year-1}-12-24`],
+	// 	[`${year-1}-12-25`]: dataPrev[`${year-1}-12-25`],
+	// 	[`${year-1}-12-26`]: dataPrev[`${year-1}-12-26`],
+	// 	[`${year-1}-12-27`]: dataPrev[`${year-1}-12-27`],
+	// 	[`${year-1}-12-28`]: dataPrev[`${year-1}-12-28`],
+	// 	[`${year-1}-12-29`]: dataPrev[`${year-1}-12-29`],
+	// 	[`${year-1}-12-30`]: dataPrev[`${year-1}-12-30`],
+	// 	[`${year-1}-12-31`]: dataPrev[`${year-1}-12-31`]
+	// };
+	let prevYearSunsets = {};
+	for (let i = 0; i < PREV_YEAR_SUNSET_LIMIT; i++) {
+		const prevYearDay = prevYearDayCounter.toJSON().slice(0,10);
+		const prevYearSunset = dataPrev[prevYearDay];
+		prevYearSunsets[prevYearDay] = prevYearSunset;
+		prevYearDayCounter.setDate(prevYearDayCounter.getDate() - 1);
+	}
 
 	const dataNext = read(`${DIR_SUNSET}/${year+1}.json`);
-	const nextYearFirst2Sunsets = {
-		[`${year+1}-01-01`]: dataNext[`${year+1}-01-01`],
-		[`${year+1}-01-02`]: dataNext[`${year+1}-01-02`]
-	};
+	// const nextYearFirst8Sunsets = {
+	// 	[`${year+1}-01-01`]: dataNext[`${year+1}-01-01`],
+	// 	[`${year+1}-01-02`]: dataNext[`${year+1}-01-02`],
+	// 	[`${year+1}-01-03`]: dataNext[`${year+1}-01-03`],
+	// 	[`${year+1}-01-04`]: dataNext[`${year+1}-01-04`],
+	// 	[`${year+1}-01-05`]: dataNext[`${year+1}-01-05`],
+	// 	[`${year+1}-01-06`]: dataNext[`${year+1}-01-06`],
+	// 	[`${year+1}-01-07`]: dataNext[`${year+1}-01-07`],
+	// 	[`${year+1}-01-08`]: dataNext[`${year+1}-01-08`]
+	// };
+	let nextYearSunsets = {};
+	let nextYearDayCounter = new Date(`${year+1}-01-01`);
+	for (let i = 0; i < NEXT_YEAR_SUNSET_LIMIT; i++) {
+		const nextYearDay = nextYearDayCounter.toJSON().slice(0,10);
+		const nextYearSunset = dataNext[nextYearDay];
+		nextYearSunsets[nextYearDay] = nextYearSunset;
+		nextYearDayCounter.setDate(nextYearDayCounter.getDate() + 1);
+	}
 
 	return {
-		...prevYearLast2Sunsets, 
+		...prevYearSunsets, 
 		...data, 
-		...nextYearFirst2Sunsets
+		...nextYearSunsets
 	};
 }
