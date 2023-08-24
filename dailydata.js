@@ -13,9 +13,10 @@ import fs from 'fs';
 // COORDS "coords=<lat,long>" eg "coords=33.71,-10.445"
 // TZ (optional) "tz=-5"
 
-const START_YEAR = 2022;
-const END_YEAR = 2022;
+const START_YEAR = 1971;
+const END_YEAR = 1976;
 const MY_COORDS = "25.710583,-80.441457";
+// const COORDS_SEATTLE = "47.60,-122.33"
 const DIR_ALL = "sourcedata/dailysunmoon";
 
 let date = new Date(START_YEAR,0,1);

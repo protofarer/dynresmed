@@ -31,30 +31,26 @@ export function createSessions(year, dir_sessions) {
 			cycle.n = data.time;
 
 			// when new moon, can calculate T_2 and sessions 7-10
-			// when prev last quarter moon not in curr year, get previous year
-			if (!cycle?.lq) {
-				const listLastQuarters = phasePrevYearLastMonth.filter(x => x.phase === 3);
-				const lq = listLastQuarters[listLastQuarters.length - 1];
-				cycle.lq = lq;	// unhappy about object reference, but ok javascript
-			}
-			cycle.t2 = cycle.n - cycle.lq;
+			// phase data includes last phase of prev year, so if new moon is first
+			// phase in phae data, there won't be a prev last quarter moon to calc T_2
+			// nor sessions 7-9
+			if (cycle?.lq) {
+				cycle.t2 = cycle.n - cycle.lq;
 
-			const s7 = findSession7(p.lq, p.t2, sunsets);	// 7: sunset nearest
-			const s8 = findSession8(p.lq, p.t2, sunsets);	// 8: sunset nearest
-			const s9 = findSession9(p.lq, p.t2, sunsets);	// 9: sunset nearest
+				const s7 = findSession7(p.lq, p.t2, sunsets);	// 7: LQ + T_2 sunset nearest
+				const s8 = findSession8(p.lq, p.t2, sunsets);	// 8: LQ + 2*T_2 sunset nearest
+				const s9 = findSession9(p.lq, p.t2, sunsets);	// 9: LQ + 3*T_2 sunset nearest
+				sessions.push(s7,s8,s9);
+			}
 
 			// 10: sunset nearest new moon
-			// TODO session 10's time potentially falls in previous or next year, so instead of
-			// pulling last/next year's sunset data, check if the nearest sunset AFTER/BEFORE is
-			// within 12 hours, and if it is, include this session
 			const s10 = findSession10(p.n);
-
-			sessions.push(s7, s8, s9, s10);
+			sessions.push(s10);
 
 		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
 		} else if (x.phase === 2) {
 			cycle.f = data.time;
-			const s2 = findSession2(cycle.f, sunsets);				// session 2: 1st sunset after full moon
+			const s2 = findSession2(cycle.f, sunsets);	// 2: sunset after full moon
 			sessions.push(s2);
 
 		} else if (x.phase === 3) {
@@ -62,29 +58,56 @@ export function createSessions(year, dir_sessions) {
 
 			// when last quarter moon, can calculate T_1 and sessions 1-6
 			// when prev full moon not in curr year, get previous year
-			if (!cycle?.f) {
-				const listFull = phasePrevYearLastMonth.filter(x => x.phase === 2);
-				const f = listFull[listFull.length - 1];
-				cycle.f = f;	// unhappy about object reference, but ok javascript
+			// if no full moon, can't do T_1 calcs
+			if (cycle?.f) {
+				cycle.t1 = cycle.lq - cycle.f;
+
+				// session 1's time potentially falls in previous year, so instead of
+				// pulling last year's sunset data, check if the nearest sunset AFTER is
+				// within 12 hours, if it is, include this session
+				const s1 = findSession1(cycle.f, cycle.t1, sunsets);	// 1: FM - T_1 sunset nearest
+				const s3 = findSession3(cycle.f, cycle.t1, sunsets);	// 3: FM + T_1 sunset nearest
+				const s4 = findSession4(cycle.f, cycle.t1, sunsets);	// 4: FM + 2*T_1 sunset nearest
+				const s5 = findSession5(cycle.f, cycle.t1, sunsets);	// 5: FM + 3*T_1 sunset nearest
+				sessions.push(s1, s2, s3, s4, s5);
 			}
-			cycle.t1 = cycle.lq - cycle.f;
 
-			// 1: sunset nearest this
-			// session 1's time potentially falls in previous year, so instead of
-			// pulling last year's sunset data, check if the nearest sunset AFTER is
-			// within 12 hours, if it is, include this session
-			const s1 = findSession1(cycle.f, cycle.t1, sunsets);
-			const s3 = findSession3(cycle.f, cycle.t1, sunsets);	// 3: sunset nearest
-			const s4 = findSession4(cycle.f, cycle.t1, sunsets);	// 4: sunset nearest
-			const s5 = findSession5(cycle.f, cycle.t1, sunsets);	// 5: sunset nearest
 			const s6 = findSession6(cycle.lq, sunsets);			// 6: sunset nearest last quarter moon
-
-			sessions.push(s1, s2, s3, s4, s5, s6);
+			sessions.push(s6);
 		}
 	});
 }
 
+// Since doesn't return sunsets that outside of year, return null if no sunset found within 12 hours
+export function findNearestSunset(date, sunsets) {
+	// check sunset from day before, day of, and day after
+	const sunsetBefore = findSunsetDatetimeByDay(new Date(date.getTime() - (1000 * 60 * 60 * 24)), sunsets);
+	const sunsetCurrent = findSunsetDatetimeByDay(date, sunsets);
+	const sunsetAfter = findSunsetDatetimeByDay(new Date(date.getTime() + (1000 * 60 * 60 * 24)), sunsets);
+
+	const sunsetsAdjacent = [sunsetBefore, sunsetCurrent, sunsetAfter];
+
+	let min = Infinity;
+	let sunsetNearest = null;
+	for (let sunset of sunsetsAdjacent) {
+		// construct date object based on element and convert numeric values into properly "0" padded strings for use in Date constructor
+		// NB: time is already padded in lunar phase data
+		// NB: lunar phase data is ordered chronologically
+		const diff = date - sunset;
+		if (Math.abs(diff) < Math.abs(min)) {
+			min = diff;
+			sunsetNearest = sunset;
+		} else {
+			break;
+		}
+	};
+
+	return sunsetNearest;
+}
+
+
 export function findSunsetDatetimeByDay(date, sunsets) {
+	// use for sunsets found by some multiple of T_1 or T_2 from another sunset
 	const dateString = date.toJSON().slice(0,10);
 	
 	const sunsetTime = sunsets?.[dateString];
@@ -93,45 +116,8 @@ export function findSunsetDatetimeByDay(date, sunsets) {
 		console.error(`No sunset found for date ${dateString}`);
 		return null;
 	}
-	const sunset = new Date(`${dateString}T${sunsetTime}Z`);
 
-	// ? are any of these sunsets more than 12 hours from the date?
-	const diff = Math.abs(sunset - date) / (1000 * 60 * 60); // hours
-	if (diff >= 12)
-		console.log(`bug: distant sunset found, hours from pt:`, diff )
-
-	return sunset;
-}
-
-// * Alternatively, the nearest sunset that is found from some offset +/-T
-// * from another sunset would have to fall +/- 2 days from that sunset add the
-export function findNearestSunset1(date, sunsets) {
-}
-
-// Since doesn't return sunsets that outside of year, return null if no sunset found within 12 hours
-export function findNearestSunset2(date, sunsets) {
-	let min = Infinity;
-	for (let x of sunsets) {
-
-		// construct date object based on element and convert numeric values into properly "0" padded strings for use in Date constructor
-		// NB: time is already padded in lunar phase data
-		// NB: lunar phase data is ordered chronologically
-		const sunset = makeDateFromSunsetObject(x);
-		const diff = date - sunset;
-		if (Math.abs(diff) < Math.abs(min)) {
-			min = diff;
-		} else {
-			break;
-		}
-	};
-
-	// * DEBUG get familiar with the hour quantity returned to see if the
-	// edge case is handled well enough
-	console.log(`min in hours:`, min / (1000 * 60 * 60));
-	
-	// TODO is it accurate to return null if min > 12 hours?
-	// return min;
-	return new Date(date.getTime() + min);
+	return new Date(`${dateString}T${sunsetTime}Z`);
 }
 
 export function makeDateFromSunsetObject(obj) {
@@ -140,24 +126,33 @@ export function makeDateFromSunsetObject(obj) {
 		return new Date(`${obj.year}-${month}-${day}T${obj.time}`);
 }
 
-export function findFirstSunsetAfterWithinYear(date) {
+export function findFirstSunsetAfter(date, sunsets) {
 	// date argument must be within year
-	for (let x of dataSunset) {
-		const datetime = makeDateFromSunsetObject(x);
-		if (datetime > date) {
-			return datetime;
-		}
+	const dateString = date.toJSON().slice(0,10);
+	
+	const sunsetTimeCurrent = sunsets?.[dateString];
+	const sunsetDatetimeCurrent = new Date(`${dateString}T${sunsetTimeCurrent}Z`);
+
+	const dateDayAfter = new Date(date);
+	dateDayAfter.setDate(date.getDate() + 1);
+	const dateStringDayAfter = dateDayAfter.toJSON().slice(0,10);
+	const sunsetTimeDayAfter = sunsets?.[dateStringDayAfter];
+	const sunsetDatetimeDayAfter = new Date(`${dateStringDayAfter}T${sunsetTimeDayAfter}Z`);
+
+	if (sunsetDatetimeCurrent > date) {
+		return sunsetDatetimeCurrent;
 	}
-	return null;
+	return sunsetDatetimeDayAfter;
 }
 
 export function findSession1(datetimeFullMoon, t1, sunsets) {
+	// TODO use precise nearest sunset
 	const fullMinusT1 = new Date(datetimeFullMoon.getTime() - p.t1);
 	return findSunsetDatetimeByDay(fullMinusT1, sunsets); // if null, discard session
 }
 
 export function findSession2(datetimeFullMoon, sunsets) {
-	return findFirstSunsetAfterWithinYear(datetimeFullMoon, sunsets);
+	return findFirstSunsetAfter(datetimeFullMoon, sunsets);
 }
 
 export function findSession3(datetimeFullMoon, t1, sunsets) {
@@ -176,6 +171,7 @@ export function findSession5(datetimeFullMoon, t1, sunsets) {
 }
 
 export function findSession6(datetimeLastQuarter, sunsets) {
+	// TODO use precise nearest sunset
 	return findSunsetDatetimeByDay(datetimeLastQuarter, sunsets);
 }
 
@@ -195,7 +191,7 @@ export function findSession9(datetimeLastQuarter, t2, sunsets) {
 }
 
 export function findSession10(datetimeNewMoon, sunsets) {
-	return findSunsetDatetimeByDay(datetimeNewMoon, sunsets);
+	return findNearestSunset(datetimeNewMoon, sunsets);
 }
 
 export function read(filepath) {
@@ -208,11 +204,13 @@ export function getPhaseData(year) {
 
 	// needed for calculations near edges of the year
 	const dataPrev = read(`${DIR_PHASE}/${year-1}.json`);
-	const dataPrevYearLastMonth = dataPrev[dataPrev.length - 1];
-	const dataNext = read(`${DIR_PHASE}/${year+1}.json`);
-	const dataNextYearFirstMonth = dataNext[0];
+	// ? Probably only need last phase of the year
+	const lastPhasePrevYear = dataPrev[dataPrev.length - 1];
 
-	return [dataPrevYearLastMonth, ...data, dataNextYearFirstMonth];
+	const dataNext = read(`${DIR_PHASE}/${year+1}.json`);
+	const firstPhaseNextYear = dataNext[0];
+
+	return [lastPhasePrevYear, ...data, firstPhaseNextYear];
 }
 
 export function getSunsetData(year) {
