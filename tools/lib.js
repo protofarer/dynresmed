@@ -1,11 +1,14 @@
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
-const DIR_SUNSET = "sourcedata/dailysunset";
-const DIR_PHASE = "sourcedata/lunarphase";
+const DIR_HOME = os.homedir();
+const DIR_SUNSET = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "dailysunset");
+const DIR_PHASE = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "lunarphase");
 const NEXT_YEAR_SUNSET_LIMIT = 8;
 const PREV_YEAR_SUNSET_LIMIT = 11; // 11th sunset not a valid result, only used in findFirstSunsetAfter calculation
 
-export function createSessions(year, dir_sessions) {
+export function generateSessionsByYear(year, dir_sessions) {
 
 	// * READ, TRANSFORM, LOAD DATA
 	const phases = getPhaseData(year);
@@ -13,6 +16,11 @@ export function createSessions(year, dir_sessions) {
 
 	// * CALCULATE SESSIONS
 
+	const sessions = findSessions(phases, sunsets);
+	return sessions;
+}
+
+export function findSessions(phases, sunsets) {
 	let sessions = []; // end result, a list of session start times and session no.
 	let cycle = {}; // store times and data for current cycle
 
@@ -26,11 +34,14 @@ export function createSessions(year, dir_sessions) {
 	// }
 
 	phases.forEach((data, idx) => {
+		const [hours, minutes] = data.time.split(":").map(x => parseInt(x));
+		const phaseDatetime = new Date(Date.UTC(data.year, data.month - 1, data.day, hours, minutes));
 
 		// NEW MOON
 		if (data.phase === 0) {
 
-			cycle.n = data.time;
+			// ! TODO convert time to UTC date object
+			cycle.n = phaseDatetime;
 
 			// when new moon, can calculate T_2 and sessions 7-10
 			// phase data includes last phase of prev year, so if new moon is first
@@ -39,24 +50,24 @@ export function createSessions(year, dir_sessions) {
 			if (cycle?.lq) {
 				cycle.t2 = cycle.n - cycle.lq;
 
-				const s7 = findSession7(p.lq, p.t2, sunsets);	// 7: LQ + T_2 sunset nearest
-				const s8 = findSession8(p.lq, p.t2, sunsets);	// 8: LQ + 2*T_2 sunset nearest
-				const s9 = findSession9(p.lq, p.t2, sunsets);	// 9: LQ + 3*T_2 sunset nearest
+				const s7 = findSession7(cycle.lq, cycle.t2, sunsets);	// 7: LQ + T_2 sunset nearest
+				const s8 = findSession8(cycle.lq, cycle.t2, sunsets);	// 8: LQ + 2*T_2 sunset nearest
+				const s9 = findSession9(cycle.lq, cycle.t2, sunsets);	// 9: LQ + 3*T_2 sunset nearest
 				sessions.push(s7,s8,s9);
 			}
 
 			// 10: sunset nearest new moon
-			const s10 = findSession10(p.n);
+			const s10 = findSession10(cycle.n);
 			sessions.push(s10);
 
 		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
 		} else if (x.phase === 2) {
-			cycle.f = data.time;
+			cycle.f = phaseDatetime;
 			const s2 = findSession2(cycle.f, sunsets);	// 2: sunset after full moon
 			sessions.push(s2);
 
 		} else if (x.phase === 3) {
-			cycle.lq = data.time;
+			cycle.lq = phaseDatetime;
 
 			// when last quarter moon, can calculate T_1 and sessions 1-6
 			// when prev full moon not in curr year, get previous year
@@ -78,6 +89,8 @@ export function createSessions(year, dir_sessions) {
 			sessions.push(s6);
 		}
 	});
+
+	return sessions;
 }
 
 // Since doesn't return sunsets that outside of year, return null if no sunset found within 12 hours
@@ -88,6 +101,8 @@ export function findNearestSunset(date, sunsets) {
 	const sunsetAfter = findSunsetDatetimeByDay(new Date(date.getTime() + (1000 * 60 * 60 * 24)), sunsets);
 
 	const sunsetsAdjacent = [sunsetBefore, sunsetCurrent, sunsetAfter];
+	console.log(`sunsetsadjacent`, sunsetsAdjacent);
+	
 
 	let min = Infinity;
 	let sunsetNearest = null;
@@ -96,6 +111,8 @@ export function findNearestSunset(date, sunsets) {
 		// NB: time is already padded in lunar phase data
 		// NB: lunar phase data is ordered chronologically
 		const diff = date - sunset;
+		console.log(`diff`, diff)
+		
 		if (Math.abs(diff) < Math.abs(min)) {
 			min = diff;
 			sunsetNearest = sunset;
@@ -217,22 +234,31 @@ export function findSession10(datetimeNewMoon, sunsets) {
 }
 
 export function read(filepath) {
-	const file = fs.readFileSync(filepath);
-	return JSON.parse(file);
+	try {
+		const file = fs.readFileSync(filepath);
+		return JSON.parse(file);
+	} catch (err) {
+		console.error(`Error reading file ${filepath}: ${err.message}`);
+		throw err;
+	}
 }
 
 export function getPhaseData(year) {
-	const data = read(`${DIR_PHASE}/${year}.json`);
-
-	// needed for calculations near edges of the year
-	const dataPrev = read(`${DIR_PHASE}/${year-1}.json`);
-	// ? Probably only need last phase of the year
-	const lastPhasePrevYear = dataPrev[dataPrev.length - 1];
-
-	const dataNext = read(`${DIR_PHASE}/${year+1}.json`);
-	const firstPhaseNextYear = dataNext[0];
-
-	return [lastPhasePrevYear, ...data, firstPhaseNextYear];
+	try {
+		const data = read(`${DIR_PHASE}/${year}.json`);
+	
+		// needed for calculations near edges of the year
+		const dataPrev = read(`${DIR_PHASE}/${year-1}.json`);
+		// ? Probably only need last phase of the year
+		const lastPhasePrevYear = dataPrev[dataPrev.length - 1];
+	
+		const dataNext = read(`${DIR_PHASE}/${year+1}.json`);
+		const firstPhaseNextYear = dataNext[0];
+	
+		return [lastPhasePrevYear, ...data, firstPhaseNextYear];
+	} catch (err) {
+		throw err;
+	}
 }
 
 export function getSunsetData(year) {
