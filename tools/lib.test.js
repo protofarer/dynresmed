@@ -211,7 +211,7 @@ test('first sunset after', () => {
 
 })
 
-test.only('trivial sessions: 2, 6, 10', () => {
+test('trivial sessions: 2, 6, 10', () => {
 	const year1 = 2023;
 	const phases1 = getPhaseData(year1);
 	// 	"day": 6,
@@ -293,7 +293,7 @@ test.only('trivial sessions: 2, 6, 10', () => {
 	expect(s102.getDate() === 11).toBeTruthy();
 })
 
-test.skip('sessions for: early year full moon with nearest sunset in prev year', () => {
+test.only('sessions for: early year full moon with nearest sunset in prev year', () => {
 	const file = fs.readFileSync(`${DIR_TOOLS}/testYears.json`);
 	const data = JSON.parse(file).dayOnePhaseSunsetPrevFULL;
 
@@ -343,7 +343,9 @@ test.skip('sessions for: early year full moon with nearest sunset in prev year',
 
 	const sessions = findSessions(phases, sunsets, year);
 	console.log(`1st phase`, phases[0])
-	console.log(`2nd phase`, phases[1])
+	console.log(`FM`, phases[1])
+	console.log(`LQ`, phases[2])
+	console.log(`NM`, phases[3])
 	sessions.sort((a,b) => new Date(Object.keys(a)[0]).getTime() - new Date(Object.keys(b)[0]).getTime());
 	console.log(`sessions`, sessions.slice(0,15))
 	
