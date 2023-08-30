@@ -6,9 +6,20 @@ import {
 	findNearestSunset,
 	findSunsetDatetimeByDay,
 	findFirstSunsetAfter,
-	findSessions, 
+	findSessions,
+	findSession1,
+	findSession2,
+	findSession3,
+	findSession4,
+	findSession5,
+	findSession6,
+	findSession7,
+	findSession8,
+	findSession9,
+	findSession10,
+	convertPhaseDataToDate, 
 } from './lib.js';
-import { DIR_TOOLS, QUARTERS } from './dataCommon.js';
+import { DIR_PHASE, DIR_TOOLS, QUARTERS } from './dataCommon.js';
 
 
 test('find sunset by day', () => {
@@ -200,7 +211,89 @@ test('first sunset after', () => {
 
 })
 
-test.only('sessions for: early year full moon with nearest sunset in prev year', () => {
+test.only('trivial sessions: 2, 6, 10', () => {
+	const year1 = 2023;
+	const phases1 = getPhaseData(year1);
+	// 	"day": 6,
+	// 	"month": 1,
+	// 	"phase": 2,
+	// 	"time": "23:08",
+
+	// 	"day": 15,
+	// 	"month": 1,
+	// 	"phase": 3,
+	// 	"time": "02:10",
+
+	// 	"day": 21,
+	// 	"month": 1,
+	// 	"phase": 0,
+	// 	"time": "20:53",
+	const sunsets1 = getSunsetData(year1);
+
+	const year2 = 2024;
+	const phases2 = getPhaseData(year2);
+	// 	"day": 4,
+	// 	"month": 1,
+	// 	"phase": 3,
+	// 	"time": "03:30",
+
+	// 	"day": 11,
+	// 	"month": 1,
+	// 	"phase": 0,
+	// 	"time": "11:57",
+
+	// 	"day": 25,
+	// 	"month": 1,
+	// 	"phase": 2,
+	// 	"time": "17:54",
+	const sunsets2 = getSunsetData(year2);
+
+
+	// SESSION 2
+
+	
+	const fm1 = phases1.find(x => x?.phase === QUARTERS.FULL && x.year === year1); // find first full moon
+	const dtfm1 = convertPhaseDataToDate(fm1);
+	const s21 = findSession2(dtfm1, sunsets1);
+	// after FM AND before FM + 2 day
+	expect(s21 > dtfm1 && s21 < new Date(s21.getTime() + 2 + 24 * 60 * 60 * 1000)).toBeTruthy();
+
+	const fm2 = phases2.find(x => x?.phase === QUARTERS.FULL && x.year === year2);
+	const dtfm2 = convertPhaseDataToDate(fm2);
+	const s22 = findSession2(dtfm2, sunsets2);
+	expect(s22 > dtfm2 && s22 < new Date(s22.getTime() + 2 * 24 * 60 * 60 * 1000) ).toBeTruthy();
+
+
+	// SESSION 6
+
+	const lq1 = phases1.find(x => x?.phase === QUARTERS.LAST && x.year === year1); // find first last quarter moon
+	const dtlq1 = convertPhaseDataToDate(lq1);
+	const s61 = findSession6(dtlq1, sunsets1);
+	// since lq @ 1/15 @ 02:10 expect sunset on prev day
+	expect(s61.getDate() === 14).toBeTruthy();
+
+	const lq2 = phases2.find(x => x?.phase === QUARTERS.LAST && x.year === year2);
+	const dtlq2 = convertPhaseDataToDate(lq2);
+	const s62 = findSession6(dtlq2, sunsets2);
+	// since lq @ 1/4 @ 3:30 expect sunset on prev day
+	expect(s62.getDate() === 3).toBeTruthy();
+
+	// SESSION 10
+
+	const nm1 = phases1.find(x => x?.phase === QUARTERS.NEW && x.year === year1); // first new moon
+	const dtnm1 = convertPhaseDataToDate(nm1);
+	const s101 = findSession10(dtnm1, sunsets1);
+	// since nm @ 1/21 @ 20:53 expect sunset on same day
+	expect(s101.getDate() === 21).toBeTruthy();
+
+	const nm2 = phases2.find(x => x?.phase === QUARTERS.NEW && x.year === year2);
+	const dtnm2 = convertPhaseDataToDate(nm2);
+	const s102 = findSession10(dtnm2, sunsets2);
+	// since nm @ 1/11 @ 11:57 expect sunset on same day
+	expect(s102.getDate() === 11).toBeTruthy();
+})
+
+test.skip('sessions for: early year full moon with nearest sunset in prev year', () => {
 	const file = fs.readFileSync(`${DIR_TOOLS}/testYears.json`);
 	const data = JSON.parse(file).dayOnePhaseSunsetPrevFULL;
 
@@ -212,6 +305,40 @@ test.only('sessions for: early year full moon with nearest sunset in prev year',
 	expect(phase).toEqual(QUARTERS.FULL);
 
 	const phases = getPhaseData(year);
+	// first 3 phases 2048
+	// {
+	// 	"day": 1,
+	// 	"month": 1,
+	// 	"phase": 2,
+	// 	"time": "06:57",
+	// 	"year": 2048
+	// },
+	// {
+	// 	"day": 8,
+	// 	"month": 1,
+	// 	"phase": 3,
+	// 	"time": "18:49",
+	// 	"year": 2048
+	// },
+	// {
+	// 	"day": 15,
+	// 	"month": 1,
+	// 	"phase": 0,
+	// 	"time": "11:32",
+	// 	"year": 2048
+	// },
+
+	// ~s1: 12/30/47 FM
+	// ~s2: 1/1/48
+	// ~s3: 1/3/48
+	// ~s4: 1/5/48
+	// ~s5: 1/7/48
+	// ~s6: 1/8/48 LQ
+	// ~s7: 1/10/48
+	// ~s8: 1/12/48
+	// ~s9: 1/14/48
+	// ~s10: 1/15/48 NM
+
 	const sunsets = getSunsetData(year);
 
 	const sessions = findSessions(phases, sunsets, year);

@@ -43,10 +43,6 @@ export function findSessions(phases, sunsets) {
 			// ! TODO convert time to UTC date object
 			cycle.n = phaseDatetime;
 
-			// 10: sunset nearest new moon
-			const s10 = findSession10(cycle.n, sunsets);
-			sessions.push({ [s10?.toISOString()]: 10 });
-
 			// when new moon, can calculate T_2 and sessions 7-10
 			// phase data includes last phase of prev year, so if new moon is first
 			// phase in phae data, there won't be a prev last quarter moon to calc T_2
@@ -60,12 +56,14 @@ export function findSessions(phases, sunsets) {
 				sessions.push({[s7?.toISOString()]: 7},{[s8?.toISOString()]: 8},{[s9?.toISOString()]: 9});
 			}
 
+			// 10: sunset nearest new moon
+			const s10 = findSession10(cycle.n, sunsets);
+			sessions.push({ [s10?.toISOString()]: 10 });
+
 		} else if (data.phase === QUARTERS.FULL) {
 			cycle.f = phaseDatetime;
 			const s2 = findSession2(cycle.f, sunsets);	// 2: sunset after full moon
 			sessions.push({[s2?.toISOString()]: 2});
-			
-			
 
 		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
 		} else if (data.phase === QUARTERS.LAST) {
@@ -144,10 +142,16 @@ export function findSunsetDatetimeByDay(date, sunsets) {
 	return new Date(`${dateString}T${sunsetTime}Z`);
 }
 
-export function makeDateFromSunsetObject(obj) {
+export function convertSunsetDataToDate(obj) {
 		const month = String(obj.month.padStart(2, '0'));
 		const day = String(obj.day.padStart(2, '0'));
-		return new Date(`${obj.year}-${month}-${day}T${obj.time}`);
+		return new Date(`${obj.year}-${month}-${day}T${obj.time}Z`);
+}
+
+export function convertPhaseDataToDate(obj) {
+		const month = String(obj.month).padStart(2, '0');
+		const day = String(obj.day).padStart(2, '0');
+		return new Date(`${obj.year}-${month}-${day}T${obj.time}Z`);
 }
 
 function findDateByDaysFrom(date, days) {
@@ -202,37 +206,37 @@ export function findSession2(datetimeFullMoon, sunsets) {
 
 export function findSession3(datetimeFullMoon, t1, sunsets) {
 	const fullPlusT1 = new Date(datetimeFullMoon.getTime() + t1);
-	return findSunsetDatetimeByDay(fullPlusT1, sunsets);
+	return findNearestSunset(fullPlusT1, sunsets);
 }
 
 export function findSession4(datetimeFullMoon, t1, sunsets) {
 	const fullPlus2T1 = new Date(datetimeFullMoon.getTime() + 2*t1);
-	return findSunsetDatetimeByDay(fullPlus2T1, sunsets);
+	return findNearestSunset(fullPlus2T1, sunsets);
 }
 
 export function findSession5(datetimeFullMoon, t1, sunsets) {
 	const fullPlus3T1 = new Date(datetimeFullMoon.getTime() + 3*t1);
-	return findSunsetDatetimeByDay(fullPlus3T1, sunsets);
+	return findNearestSunset(fullPlus3T1, sunsets);
 }
 
 export function findSession6(datetimeLastQuarter, sunsets) {
 	// TODO use precise nearest sunset
-	return findSunsetDatetimeByDay(datetimeLastQuarter, sunsets);
+	return findNearestSunset(datetimeLastQuarter, sunsets);
 }
 
 export function findSession7(datetimeLastQuarter, t2, sunsets) {
 	const lastQuarterPlusT2 = new Date(datetimeLastQuarter.getTime() + t2);
-	return findSunsetDatetimeByDay(lastQuarterPlusT2, sunsets);
+	return findNearestSunset(lastQuarterPlusT2, sunsets);
 }
 
 export function findSession8(datetimeLastQuarter, t2, sunsets) {
 	const lastQuarterPlus2T2 = new Date(datetimeLastQuarter.getTime() + 2*t2);
-	return findSunsetDatetimeByDay(lastQuarterPlus2T2, sunsets);
+	return findNearestSunset(lastQuarterPlus2T2, sunsets);
 }
 
 export function findSession9(datetimeLastQuarter, t2, sunsets) {
 	const lastQuarterPlus3T2 = new Date(datetimeLastQuarter.getTime() + 3*t2);
-	return findSunsetDatetimeByDay(lastQuarterPlus3T2, sunsets);
+	return findNearestSunset(lastQuarterPlus3T2, sunsets);
 }
 
 export function findSession10(datetimeNewMoon, sunsets) {
