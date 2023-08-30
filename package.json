@@ -9,7 +9,12 @@
     "dev": "vite serve src",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "getDailyData": "node ./tools/getDailyData.js",
+    "getPhaseData": "node ./tools/getPhaseData.js",
+    "extractSunsetData": "node ./tools/extractSunsetData.js",
+    "buildData": "npm run getDailyData && npm run extractSunsetData && npm run getPhaseData",
+    "findTestYears": "node ./tools/findTestYears.js"
   },
   "keywords": [
     "meditation",

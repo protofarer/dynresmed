@@ -2,16 +2,11 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-const DIR_HOME = os.homedir();
-const DIR_SUNSET = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "dailysunset");
-const DIR_PHASE = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "lunarphase");
+import { DIR_SUNSET, DIR_PHASE } from './dataCommon.js';
+import { QUARTERS } from './dataCommon.js';
+
 const NEXT_YEAR_SUNSET_LIMIT = 8;
 const PREV_YEAR_SUNSET_LIMIT = 11; // 11th sunset not a valid result, only used in findFirstSunsetAfter calculation
-export const QUARTERS = {
-	NEW: 0,
-	FULL: 2,
-	LAST: 3
-}
 
 export function generateSessionsByYear(year, dir_sessions) {
 
@@ -106,8 +101,7 @@ export function findNearestSunset(date, sunsets) {
 	const sunsetAfter = findSunsetDatetimeByDay(new Date(date.getTime() + (1000 * 60 * 60 * 24)), sunsets);
 
 	const sunsetsAdjacent = [sunsetBefore, sunsetCurrent, sunsetAfter];
-	console.log(`sunsetsadjacent`, sunsetsAdjacent);
-	
+	// console.log(`sunsetsadjacent`, sunsetsAdjacent);
 
 	let min = Infinity;
 	let sunsetNearest = null;
@@ -116,7 +110,7 @@ export function findNearestSunset(date, sunsets) {
 		// NB: time is already padded in lunar phase data
 		// NB: lunar phase data is ordered chronologically
 		const diff = date - sunset;
-		console.log(`diff`, diff)
+		// console.log(`diff`, diff)
 		
 		if (Math.abs(diff) < Math.abs(min)) {
 			min = diff;
@@ -318,4 +312,8 @@ export function getSunsetData(year) {
 		...data, 
 		...nextYearSunsets
 	};
+}
+
+export function isLeapYear(y) {
+	return (y % 4 === 0 && y% 100 !== 0) || y% 400 === 0;
 }
