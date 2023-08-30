@@ -38,4 +38,4 @@ for (let year = YEAR_START; year <= YEAR_END; year++) {
 	});
 }
 
-console.log(`Fin extracting phase data for ${YEAR_START}-${YEAR_END}.`);
+console.log(`Fin fetching phase data for ${YEAR_START}-${YEAR_END}.`);

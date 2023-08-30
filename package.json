@@ -14,7 +14,7 @@
     "getPhaseData": "node ./tools/getPhaseData.js",
     "extractSunsetData": "node ./tools/extractSunsetData.js",
     "buildData": "npm run getDailyData && npm run extractSunsetData && npm run getPhaseData",
-    "findTestYears": "node ./tools/findTestYears.js"
+    "findTestYears": "node ./tools/findYearsForTest.js"
   },
   "keywords": [
     "meditation",

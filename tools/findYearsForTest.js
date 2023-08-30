@@ -4,11 +4,14 @@
 
 import fs from 'fs';
 
-import { findNearestSunset, getPhaseData, getSunsetData, QUARTERS } from '../tools/lib.js';
+import { findNearestSunset, getPhaseData, getSunsetData } from '../tools/lib.js';
+import { QUARTERS, DIR_TOOLS } from './dataCommon.js';
 
 // years from which to find test data, use years for which prev AND next year have data
 const YEAR_START = 1901;
 const YEAR_END = 2099;
+
+const FILE = `${DIR_TOOLS}/testYears.json`;
 
 let allResults = {};
 // for each phase:
@@ -33,7 +36,7 @@ for (let year = YEAR_START; year < YEAR_END; year++) {
 		allResults?.["dayMinusOnePhaseSunsetPrevNEW"]
 	) {
 		console.log(`Found all desired test case data`);
-		process.exit(0);
+		break;
 	}
 }
 
@@ -44,7 +47,7 @@ for (let year = YEAR_START; year < YEAR_END; year++) {
 console.log(`allResults:`);
 console.table(allResults);
 
-fs.writeFile(`testYears.json`, JSON.stringify(allResults), (err) => {
+fs.writeFile(FILE, JSON.stringify(allResults), (err) => {
 	if (err) {
 		console.log(`error writing file for test years`);
 		throw err
@@ -52,7 +55,6 @@ fs.writeFile(`testYears.json`, JSON.stringify(allResults), (err) => {
 	console.log(`The test year file has been saved!`);
 });
 
-console.log(`Incomplete test data`, );
 
 
 function processByYear(year, phases, sunsets, allResults) {
