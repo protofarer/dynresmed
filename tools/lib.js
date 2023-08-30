@@ -7,6 +7,11 @@ const DIR_SUNSET = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "d
 const DIR_PHASE = path.join(DIR_HOME, "projects", "resdynmed", "sourcedata", "lunarphase");
 const NEXT_YEAR_SUNSET_LIMIT = 8;
 const PREV_YEAR_SUNSET_LIMIT = 11; // 11th sunset not a valid result, only used in findFirstSunsetAfter calculation
+export const QUARTERS = {
+	NEW: 0,
+	FULL: 2,
+	LAST: 3
+}
 
 export function generateSessionsByYear(year, dir_sessions) {
 
@@ -38,7 +43,7 @@ export function findSessions(phases, sunsets) {
 		const phaseDatetime = new Date(Date.UTC(data.year, data.month - 1, data.day, hours, minutes));
 
 		// NEW MOON
-		if (data.phase === 0) {
+		if (data.phase === QUARTERS.NEW) {
 
 			// ! TODO convert time to UTC date object
 			cycle.n = phaseDatetime;
@@ -60,13 +65,13 @@ export function findSessions(phases, sunsets) {
 			const s10 = findSession10(cycle.n);
 			sessions.push(s10);
 
-		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
-		} else if (x.phase === 2) {
+		} else if (data.phase === QUARTERS.FULL) {
 			cycle.f = phaseDatetime;
 			const s2 = findSession2(cycle.f, sunsets);	// 2: sunset after full moon
 			sessions.push(s2);
 
-		} else if (x.phase === 3) {
+		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
+		} else if (data.phase === QUARTERS.LAST) {
 			cycle.lq = phaseDatetime;
 
 			// when last quarter moon, can calculate T_1 and sessions 1-6

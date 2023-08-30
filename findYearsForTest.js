@@ -120,6 +120,7 @@ function processByYear(year, phases, sunsets, allResults) {
 		console.log(`nearest sunset: `, time);
 
 		// nearest sunset to phase occurs in curr year
+		// ! this never occurs
 		if (!allResults?.["dayMinusOnePhaseSunsetCurr"]) {
 			if (nearestSunsetDatetime >= startOfCurrYear) {
 				console.log(`found day minus one phase curr year`, );
