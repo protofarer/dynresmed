@@ -43,6 +43,10 @@ export function findSessions(phases, sunsets) {
 			// ! TODO convert time to UTC date object
 			cycle.n = phaseDatetime;
 
+			// 10: sunset nearest new moon
+			const s10 = findSession10(cycle.n, sunsets);
+			sessions.push({ [s10?.toISOString()]: 10 });
+
 			// when new moon, can calculate T_2 and sessions 7-10
 			// phase data includes last phase of prev year, so if new moon is first
 			// phase in phae data, there won't be a prev last quarter moon to calc T_2
@@ -53,17 +57,15 @@ export function findSessions(phases, sunsets) {
 				const s7 = findSession7(cycle.lq, cycle.t2, sunsets);	// 7: LQ + T_2 sunset nearest
 				const s8 = findSession8(cycle.lq, cycle.t2, sunsets);	// 8: LQ + 2*T_2 sunset nearest
 				const s9 = findSession9(cycle.lq, cycle.t2, sunsets);	// 9: LQ + 3*T_2 sunset nearest
-				sessions.push(s7,s8,s9);
+				sessions.push({[s7?.toISOString()]: 7},{[s8?.toISOString()]: 8},{[s9?.toISOString()]: 9});
 			}
-
-			// 10: sunset nearest new moon
-			const s10 = findSession10(cycle.n);
-			sessions.push(s10);
 
 		} else if (data.phase === QUARTERS.FULL) {
 			cycle.f = phaseDatetime;
 			const s2 = findSession2(cycle.f, sunsets);	// 2: sunset after full moon
-			sessions.push(s2);
+			sessions.push({[s2?.toISOString()]: 2});
+			
+			
 
 		// TODO whenever encounter last quarter, find next new moon and calculate sessions that can use that data
 		} else if (data.phase === QUARTERS.LAST) {
@@ -82,11 +84,16 @@ export function findSessions(phases, sunsets) {
 				const s3 = findSession3(cycle.f, cycle.t1, sunsets);	// 3: FM + T_1 sunset nearest
 				const s4 = findSession4(cycle.f, cycle.t1, sunsets);	// 4: FM + 2*T_1 sunset nearest
 				const s5 = findSession5(cycle.f, cycle.t1, sunsets);	// 5: FM + 3*T_1 sunset nearest
-				sessions.push(s1, s2, s3, s4, s5);
+				sessions.push(
+					{[s1?.toISOString()]: 1}, 
+					{[s3?.toISOString()]: 3}, 
+					{[s4?.toISOString()]: 4}, 
+					{[s5?.toISOString()]: 5}
+				);
 			}
 
 			const s6 = findSession6(cycle.lq, sunsets);			// 6: sunset nearest last quarter moon
-			sessions.push(s6);
+			sessions.push({[s6?.toISOString()]: 6});
 		}
 	});
 
@@ -185,7 +192,7 @@ export function findFirstSunsetAfter(date, sunsets, year) {
 
 export function findSession1(datetimeFullMoon, t1, sunsets) {
 	// TODO use precise nearest sunset
-	const fullMinusT1 = new Date(datetimeFullMoon.getTime() - p.t1);
+	const fullMinusT1 = new Date(datetimeFullMoon.getTime() - t1);
 	return findSunsetDatetimeByDay(fullMinusT1, sunsets); // if null, discard session
 }
 
@@ -194,17 +201,17 @@ export function findSession2(datetimeFullMoon, sunsets) {
 }
 
 export function findSession3(datetimeFullMoon, t1, sunsets) {
-	const fullPlusT1 = new Date(datetimeFullMoon.getTime() + p.t1);
+	const fullPlusT1 = new Date(datetimeFullMoon.getTime() + t1);
 	return findSunsetDatetimeByDay(fullPlusT1, sunsets);
 }
 
 export function findSession4(datetimeFullMoon, t1, sunsets) {
-	const fullPlus2T1 = new Date(datetimeFullMoon.getTime() + 2*p.t1);
+	const fullPlus2T1 = new Date(datetimeFullMoon.getTime() + 2*t1);
 	return findSunsetDatetimeByDay(fullPlus2T1, sunsets);
 }
 
 export function findSession5(datetimeFullMoon, t1, sunsets) {
-	const fullPlus3T1 = new Date(datetimeFullMoon.getTime() + 3*p.t1);
+	const fullPlus3T1 = new Date(datetimeFullMoon.getTime() + 3*t1);
 	return findSunsetDatetimeByDay(fullPlus3T1, sunsets);
 }
 
@@ -214,17 +221,17 @@ export function findSession6(datetimeLastQuarter, sunsets) {
 }
 
 export function findSession7(datetimeLastQuarter, t2, sunsets) {
-	const lastQuarterPlusT2 = new Date(datetimeLastQuarter.getTime() + p.t2);
+	const lastQuarterPlusT2 = new Date(datetimeLastQuarter.getTime() + t2);
 	return findSunsetDatetimeByDay(lastQuarterPlusT2, sunsets);
 }
 
 export function findSession8(datetimeLastQuarter, t2, sunsets) {
-	const lastQuarterPlus2T2 = new Date(datetimeLastQuarter.getTime() + 2*p.t2);
+	const lastQuarterPlus2T2 = new Date(datetimeLastQuarter.getTime() + 2*t2);
 	return findSunsetDatetimeByDay(lastQuarterPlus2T2, sunsets);
 }
 
 export function findSession9(datetimeLastQuarter, t2, sunsets) {
-	const lastQuarterPlus3T2 = new Date(datetimeLastQuarter.getTime() + 3*p.t2);
+	const lastQuarterPlus3T2 = new Date(datetimeLastQuarter.getTime() + 3*t2);
 	return findSunsetDatetimeByDay(lastQuarterPlus3T2, sunsets);
 }
 

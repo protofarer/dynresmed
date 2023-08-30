@@ -1,10 +1,14 @@
+import fs from 'fs';
 import { expect, test } from 'vitest';;
 import { 
+	getPhaseData,
 	getSunsetData,
 	findNearestSunset,
 	findSunsetDatetimeByDay,
-	findFirstSunsetAfter, 
+	findFirstSunsetAfter,
+	findSessions, 
 } from './lib.js';
+import { DIR_TOOLS, QUARTERS } from './dataCommon.js';
 
 
 test('find sunset by day', () => {
@@ -194,4 +198,26 @@ test('first sunset after', () => {
 	const sunset8 = findFirstSunsetAfter(dt8, sunsets, year);
 	expect(sunset8).toBeNull();
 
+})
+
+test.only('sessions for: early year full moon with nearest sunset in prev year', () => {
+	const file = fs.readFileSync(`${DIR_TOOLS}/testYears.json`);
+	const data = JSON.parse(file).dayOnePhaseSunsetPrevFULL;
+
+	// verify expected test data
+	const year = data.year;
+	expect(year).toEqual(2048);
+
+	const phase = data.phase;
+	expect(phase).toEqual(QUARTERS.FULL);
+
+	const phases = getPhaseData(year);
+	const sunsets = getSunsetData(year);
+
+	const sessions = findSessions(phases, sunsets, year);
+	console.log(`1st phase`, phases[0])
+	console.log(`2nd phase`, phases[1])
+	sessions.sort((a,b) => new Date(Object.keys(a)[0]).getTime() - new Date(Object.keys(b)[0]).getTime());
+	console.log(`sessions`, sessions.slice(0,15))
+	
 })
