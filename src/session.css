@@ -25,12 +25,6 @@ body {
 }
 
 .calendar-box {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
@@ -54,15 +48,17 @@ body {
 
 .box-text {
   display: block;
+  margin-top: 5px;
 }
- 
+
+p {
+  text-align: justify;
+  text-align-last: auto;
+}
+
 .navbar {
   display: flex;
   flex-flow: row nowrap;
   justify-content:space-around;
   align-items: center;
-}
-
-.session {
-  font-weight: bold;
 }

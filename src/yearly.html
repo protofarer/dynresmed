@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resonant Dynamic Meditation Sessions by Month</title>
+    <title>Resonant Dynamic Meditation Sessions by Year</title>
 </head>
 <body>
     <nav class="navbar">
@@ -14,13 +14,11 @@
     <div class="calendar">
         <div class="calendar-header">
             <button id="prevYear">&lt;&lt; year</button>
-            <button id="prevMonth">&lt; month</button>
             <h2 id="calendarTitle"></h2>
-            <button id="nextMonth">&gt; month</button>
-            <button id="nextYear">&gt;&gt; year</button>
+            <button id="nextYear">year &gt;&gt;</button>
         </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-container" id="calendarContainer"></div>
     </div>
-    <script type="module" src="monthly.js" async></script>
+    <script type="module" src="yearly.js" async></script>
 </body>
 </html>

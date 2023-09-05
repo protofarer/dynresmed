@@ -25,12 +25,29 @@ function updateCalendar() {
     calendarGrid.appendChild(dayOfWeekBox);
   }
 
+  // offset empty boxes until reach correct day of week for first day of month
+  const firstDayOfMonthKind = firstDayOfMonth.getDay(); // 0 - 6
+  let dayCounter = 0;
+  while (dayCounter < firstDayOfMonthKind) {
+    const dayBox = document.createElement("div");
+    dayBox.classList.add("calendar-box");
+
+    const emptyNumber = document.createElement("span");
+    emptyNumber.classList.add("day-number");
+    dayBox.appendChild(emptyNumber);
+    calendarGrid.appendChild(dayBox);
+
+    dayCounter++;
+  }
+
   for (let day = 1; day <= daysInMonth; day++) {
     const dayBox = document.createElement("div");
     dayBox.classList.add("calendar-box");
 
 		const dayNumber = document.createElement("span");
 		dayNumber.classList.add("day-number");
+
+    // create empty day boxes until reach correct day of week for first day of month
 		dayNumber.textContent = day;
 
 		dayBox.appendChild(dayNumber);
