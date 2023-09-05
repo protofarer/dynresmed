@@ -6,7 +6,7 @@ import {
 	findNearestSunset,
 	findSunsetDatetimeByDay,
 	findFirstSunsetAfter,
-	findSessions,
+	findSessionsPrecise,
 	findSession1,
 	findSession2,
 	findSession3,
@@ -328,11 +328,11 @@ test.only('sessions for: early year full moon with nearest sunset in prev year',
 	// 	"year": 2048
 	// },
 
-	// ~s1: 12/30/47 FM
-	// ~s2: 1/1/48
-	// ~s3: 1/3/48
-	// ~s4: 1/5/48
-	// ~s5: 1/7/48
+	// ~s1: 12/30/47
+	// ~s2: 1/1/48 FM (sunset after)
+	// ~s3: 1/2/48
+	// ~s4: 1/4/48
+	// ~s5: 1/6/48
 	// ~s6: 1/8/48 LQ
 	// ~s7: 1/10/48
 	// ~s8: 1/12/48
@@ -340,13 +340,89 @@ test.only('sessions for: early year full moon with nearest sunset in prev year',
 	// ~s10: 1/15/48 NM
 
 	const sunsets = getSunsetData(year);
-
-	const sessions = findSessions(phases, sunsets, year);
-	console.log(`1st phase`, phases[0])
-	console.log(`FM`, phases[1])
-	console.log(`LQ`, phases[2])
-	console.log(`NM`, phases[3])
+	const sessions = findSessionsPrecise(phases, sunsets, year);
 	sessions.sort((a,b) => new Date(Object.keys(a)[0]).getTime() - new Date(Object.keys(b)[0]).getTime());
-	console.log(`sessions`, sessions.slice(0,15))
+
+	expect(Object.keys(sessions[0])[0].slice(0,10)).toEqual('2048-01-01');
+	expect(Object.keys(sessions[1])[0].slice(0,10)).toEqual('2048-01-02');
+	expect(Object.keys(sessions[2])[0].slice(0,10)).toEqual('2048-01-04');
+	expect(Object.keys(sessions[3])[0].slice(0,10)).toEqual('2048-01-06');
+	expect(Object.keys(sessions[4])[0].slice(0,10)).toEqual('2048-01-08');
+	expect(Object.keys(sessions[5])[0].slice(0,10)).toEqual('2048-01-10');
+	expect(Object.keys(sessions[6])[0].slice(0,10)).toEqual('2048-01-12');
+	expect(Object.keys(sessions[7])[0].slice(0,10)).toEqual('2048-01-14');
+	expect(Object.keys(sessions[8])[0].slice(0,10)).toEqual('2048-01-15');
+
+
+	// last 5 phases of 2048
+
+	// "day": 20,
+	// "month": 11,
+	// "phase": 2,
+	// "time": "11:19",
+	// "year": 2048
+
+	// "day": 28,
+	// "month": 11,
+	// "phase": 3,
+	// "time": "16:33",
+	// "year": 2048
+
+	// "day": 5,
+	// "month": 12,
+	// "phase": 0,
+	// "time": "15:30",
+
+	// "day": 20,
+	// "month": 12,
+	// "phase": 2,
+	// "time": "06:39",
+
+	// "day": 28,
+	// "month": 12,
+	// "phase": 3,
+	// "time": "08:31",
+
+	// 1st phase 2049
+
+	// "day": 4,
+	// "month": 1,
+	// "phase": 0,
+	// "time": "02:24",
+
+	// ~s6: 11/28/48 LQ
+	// ~s7: 11/29/48 t2=41.7
+	// ~s8: 12/1/48
+	// ---
+	// ~s9: 12/3/48
+	// ~s10: 12/5/48 NM
+	// ~s1: 12/17/48
+	// ~s2: 12/20/48 FM (sunset after)
+	// ~s3: 12/21/48
+	// ~s4: 12/23/48
+	// ~s5: 12/25/48
+	// ~s6: 12/27/48 LQ
+	// ~s7: 12/29/48
+	// ~s8: 12/31/48
+
+	// s1 discrep
+	// FM: 12/20 6:39
+	// FM - T: 12/18 10:39
+	// sunset on 12/18: 22:35
+	// delta: 14 hrs
+	// thus s1 on 12/17
+
+	// s9 discrep due to short t2 (41.7) used in calc s7, setting s8-s9 back 1 day than guesstimate
 	
+	expect(Object.keys(sessions[sessions.length - 11])[0].slice(0, 10)).toEqual('2048-12-01');
+	expect(Object.keys(sessions[sessions.length - 10])[0].slice(0, 10)).toEqual('2048-12-03');
+	expect(Object.keys(sessions[sessions.length - 9])[0].slice(0, 10)).toEqual('2048-12-05');
+	expect(Object.keys(sessions[sessions.length - 8])[0].slice(0, 10)).toEqual('2048-12-17');
+	expect(Object.keys(sessions[sessions.length - 7])[0].slice(0, 10)).toEqual('2048-12-20');
+	expect(Object.keys(sessions[sessions.length - 6])[0].slice(0, 10)).toEqual('2048-12-21');
+	expect(Object.keys(sessions[sessions.length - 5])[0].slice(0, 10)).toEqual('2048-12-23');
+	expect(Object.keys(sessions[sessions.length - 4])[0].slice(0, 10)).toEqual('2048-12-25');
+	expect(Object.keys(sessions[sessions.length - 3])[0].slice(0, 10)).toEqual('2048-12-27');
+	expect(Object.keys(sessions[sessions.length - 2])[0].slice(0, 10)).toEqual('2048-12-29');
+	expect(Object.keys(sessions[sessions.length - 1])[0].slice(0, 10)).toEqual('2048-12-31');
 })
