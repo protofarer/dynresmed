@@ -3,21 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Resonant Dynamic Meditation Sessions by Month</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="nextten.html">Next 10 Sessions</a></li>
-            <li><a href="monthly.html">Monthly View</a></li>
-            <li><a href="yearly.html">Yearly View</a></li>
-        </ul>
+    <nav class="navbar">
+        <a href="index.html">Home</a>
+        <a href="nextten.html">Next 10 Sessions</a>
+        <a href="monthly.html">Monthly View</a>
+        <a href="yearly.html">Yearly View</a>
     </nav>
+    <h1>Resonant Dynamic Meditation</h1>
+    <h2>Introduction</h2>
+    <p id="intro"></p>
+    <h2>Technique</h2>
+    <p id="med"></p>
     <!-- <script type="module" src="index.js" async></script> -->
     <script>
-        const yearlyLink = document.getElementById('yearlyLink');
-        const currentYear = new Date().getFullYear();
-        yearlyLink.href = `yearly.html?year=${currentYear}`;
+        async function init() {
+            const data = await fetch('data/intro.json').then(response => response.json());
+            const introPara = document.getElementById('intro');
+            introPara.innerHTML = data.intro;
+            const medPara = document.getElementById('med');
+            medPara.innerHTML = data.meditate;
+        }
+        init();
     </script>
 </body>
 </html>

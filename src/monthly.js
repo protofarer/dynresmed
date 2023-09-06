@@ -1,26 +1,32 @@
-import "./monthly.css";
+import "./style.css";
+import { addPopStateListener, fetchSessionsForYear, initDate } from "./lib.js";
+
+const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 const calendarTitle = document.getElementById("calendarTitle");
 const calendarGrid = document.getElementById("calendarGrid");
 const prevMonthButton = document.getElementById("prevMonth");
 const nextMonthButton = document.getElementById("nextMonth");
+const prevYearButton = document.getElementById("prevYear");
+const nextYearButton = document.getElementById("nextYear");
 
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const currentDate = new Date();
-let currentMonth = currentDate.getMonth();
-let currentYear = currentDate.getFullYear();
-let sessions = await fetch(`data/sessions/${currentYear}.json`).then((response) => response.json());
+let selectedDate = initDate();
+let sessions = await fetchSessionsForYear(selectedDate.getFullYear());
 
-function updateCalendar() {
+const updateInfo = () => {
+  const currentMonth = selectedDate.getMonth();
+  const currentYear = selectedDate.getFullYear();
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   
-  calendarTitle.textContent = `${firstDayOfMonth.toLocaleString("default", { month: "long" })} ${currentYear}`;
+  const titleText = firstDayOfMonth.toLocaleString("default", { month: "short" });
+  calendarTitle.innerHTML = `${titleText} <a class="session" href="yearly.html?year=${currentYear}">${currentYear}</a>`;
   calendarGrid.innerHTML = "";
 
-  for (let i = 0; i < daysOfWeek.length; i++) {
+  for (let i = 0; i < DAYS_OF_WEEK.length; i++) {
     const dayOfWeekBox = document.createElement("div");
     dayOfWeekBox.classList.add("calendar-box");
-    dayOfWeekBox.textContent = daysOfWeek[i];
+    dayOfWeekBox.textContent = DAYS_OF_WEEK[i];
 		dayOfWeekBox.style.background = "lightgrey";
     calendarGrid.appendChild(dayOfWeekBox);
   }
@@ -60,11 +66,19 @@ function updateCalendar() {
 		const padDay = day < 10 ? `0${day}` : day;
 		const session = sessions.find(x => Object.keys(x)[0].slice(0, 10) === `${currentYear}-${padMonth}-${padDay}`);
     if (session) {
-      const datestring = `${Object.keys(session)[0]}`; // Replace with your content
-      const hours = datestring.slice(11, 13);
-      const minutes = datestring.slice(14, 16);
-      const n = Object.values(session)[0];
-      textElement.innerHTML = `S${n}<br/>${hours}:${minutes}`;
+			const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
+      const hours = fullDatestring.slice(11, 13);
+      const minutes = fullDatestring.slice(14, 16);
+			const n = Object.values(session)[0];
+
+			const sessionLink = document.createElement("a");
+			sessionLink.classList.add("year-session");
+			sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
+			
+			sessionLink.textContent = `S${n}`;
+			dayBox.appendChild(sessionLink);
+
+      textElement.innerHTML = `${hours}:${minutes}`;
     }
 
 		dayBox.appendChild(textElement);
@@ -73,23 +87,44 @@ function updateCalendar() {
 }
 
 prevMonthButton.addEventListener("click", async () => {
-  currentMonth--;
-  if (currentMonth < 0) {
-    currentMonth = 11;
-    currentYear--;
-    sessions = await fetch(`data/sessions/${currentYear}.json`).then((response) => response.json());
+  selectedDate.setMonth(selectedDate.getMonth() - 1);
+  if (selectedDate.getMonth() === 11) {
+    sessions = await fetchSessionsForYear(selectedDate.getFullYear());
   }
-  updateCalendar();
+	history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0, 10)}`)
+  updateInfo();
 });
 
 nextMonthButton.addEventListener("click", async () => {
-  currentMonth++;
-  if (currentMonth > 11) {
-    currentMonth = 0;
-    currentYear++;
-  sessions = await fetch(`data/sessions/${currentYear}.json`).then((response) => response.json());
+  selectedDate.setMonth(selectedDate.getMonth() + 1);
+  if (selectedDate.getMonth() === 0) {
+    sessions = await fetchSessionsForYear(selectedDate.getFullYear());
   }
-  updateCalendar();
+	history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0, 10)}`)
+  updateInfo();
 });
 
-updateCalendar();
+nextYearButton.addEventListener("click", async () => {
+	if (selectedDate.getFullYear() + 1 > 2099) {
+		console.error(`cannot go earlier than year 2099`, )
+		return;
+	}
+	selectedDate.setFullYear(selectedDate.getFullYear() + 1);
+	history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0,10)}`)
+	sessions = await fetchSessionsForYear(selectedDate.getFullYear());
+  updateInfo();
+});
+
+prevYearButton.addEventListener("click", async () => {
+	if (selectedDate.getFullYear() - 1 < 1901) {
+		console.error(`cannot go earlier than year 1901`, )
+		return;
+	}
+	selectedDate.setFullYear(selectedDate.getFullYear() - 1);
+	history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0,10)}`)
+	sessions = await fetchSessionsForYear(selectedDate.getFullYear());
+  updateInfo();
+});
+
+updateInfo();
+addPopStateListener(selectedDate, updateInfo);

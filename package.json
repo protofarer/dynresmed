@@ -6,7 +6,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "dev": "vite serve src",
+    "dev": "vite serve src --host",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",

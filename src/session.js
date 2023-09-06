@@ -1,18 +1,18 @@
-import "./session.css";
+import "./style.css";
+import { addPopStateListener, fetchSessionsForYear, initDate } from "./lib.js";
 
 const sessionText = await fetch(`data/sessionText.json`).then((response) => response.json());
 
 const containerTitle = document.getElementById("containerTitle");
-const card = document.getElementById("card");
 const prevCycleButton = document.getElementById("prevCycle");
 const nextCycleButton = document.getElementById("nextCycle");
+const card = document.getElementById("card");
 
 let selectedDate = initDate();
-let sessions = await fetchSessions(selectedDate.getFullYear());
-let sessionIndex = getSessionIndexByDate(selectedDate);
-updateInfo();
+let sessions = await fetchSessionsForYear(selectedDate.getFullYear());
+let sessionIndex = getSessionIndexByDate(selectedDate, sessions);
 
-function updateInfo() {
+const updateInfo = () => {
   containerTitle.innerHTML = `${selectedDate.toDateString()}`;
 
   const session = sessions[sessionIndex];
@@ -40,11 +40,12 @@ nextCycleButton.addEventListener("click", async () => {
 
   if (sessionIndex >= sessions.length) {
     const nextYear = selectedDate.getFullYear() + 1;
-    sessions = await fetchSessions(nextYear);
+    sessions = await fetchSessionsForYear(nextYear);
     sessionIndex = 0;
   }
-  selectedDate = new Date(Object.keys(sessions[sessionIndex])[0]);
-	history.pushState({}, '', `?day=${selectedDate.toISOString().slice(0, 10)}`)
+  const sessionDate = new Date(Object.keys(sessions[sessionIndex])[0]);
+  selectedDate.setTime(sessionDate.getTime());
+	history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0, 10)}`)
   updateInfo();
 });
 
@@ -54,21 +55,22 @@ prevCycleButton.addEventListener("click", async () => {
   } else {
     sessionIndex -= 1;
   }
+
   if (sessionIndex < 0) {
     const prevYear = selectedDate.getFullYear() - 1;
-    sessions = await fetchSessions(prevYear);
+    sessions = await fetchSessionsForYear(prevYear);
     sessionIndex = sessions.length - 1;
   }
-  selectedDate = new Date(Object.keys(sessions[sessionIndex])[0]);
-  history.pushState({}, '', `?day=${selectedDate.toISOString().slice(0, 10)}`);
+  const sessionDate = new Date(Object.keys(sessions[sessionIndex])[0]);
+  selectedDate.setTime(sessionDate.getTime());
+  history.pushState({}, '', `?date=${selectedDate.toISOString().slice(0, 10)}`);
   updateInfo();
 });
 
-async function fetchSessions(year) {
-  return await fetch(`data/sessions/${year}.json`).then((response) => response.json());
-}
+updateInfo();
+addPopStateListener(selectedDate, updateInfo);
 
-function getSessionIndexByDate(date) {
+function getSessionIndexByDate(date, sessions) {
   const day = date.getDate();
   const padDay = day < 10 ? `0${day}` : day;
   const month = date.getMonth() + 1;
@@ -104,26 +106,4 @@ function findSessionIndexBeforeDate(date) {
     return null;
   }
   return nextSessionIndex;
-}
-
-
-function initDate() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const dayParam = urlParams.get("day");
-  let date;
-  if (dayParam) {
-    date = parseDateFromDayString(dayParam);
-  } else {
-    date = new Date();
-  }
-  history.pushState({}, '', `?day=${date.toISOString().slice(0,10)}`);
-  return date;
-}
-
-function parseDateFromDayString(dayString) {
-    const parts = dayString.split("-");
-    const year = parseInt(parts[0], 10);
-    const monthIndex = parseInt(parts[1], 10) - 1; // Months are zero-based
-    const day = parseInt(parts[2], 10);
-    return new Date(year, monthIndex, day);
 }
