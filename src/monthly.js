@@ -25,9 +25,8 @@ const updateInfo = () => {
 
   for (let i = 0; i < DAYS_OF_WEEK.length; i++) {
     const dayOfWeekBox = document.createElement("div");
-    dayOfWeekBox.classList.add("calendar-box");
+    dayOfWeekBox.classList.add("calendar-box-headers");
     dayOfWeekBox.textContent = DAYS_OF_WEEK[i];
-		dayOfWeekBox.style.background = "lightgrey";
     calendarGrid.appendChild(dayOfWeekBox);
   }
 

@@ -1,24 +1,263 @@
+:root {
+  --std-color-foreground: hsl(0, 0%, 40%);
+  --std-color-background: hsl(0, 0%, 95%);
+
+  --std-color-interactive: hsl(38, 100%, 50%);
+  --std-color-interactive-focus: hsl(59, 100%, 50%);
+  --std-color-interactive-focus-secondary: hsl(86, 100%, 50%);
+
+  --std-color-border: hsl(0, 0%, 0%);
+  --std-color-invalid: hsl(0, 100%, 50%);
+
+  --std-color-links: var(--color-interactive);
+  --std-color-links-hover: var(--color-interactive-focus);
+  --std-color-links-active: var(--color-interactive-focus);
+
+  --std-max-sitewidth: 980px;
+  --std-min-body-lineLength: 30ch;
+  --std-max-body-lineLength: 70ch;
+
+  --std-font-body: system-ui;
+  --std-font-display: var(--font-body);
+  --std-body-lineheight: 1.5;
+
+  font-family: var(--std-font-body);
+  line-height: var(--std-body-lineheight);
+  font-weight: 400;
+  color-scheme: light;
+  color: var(--std-color-foreground);
+
+  /* From exemplar site */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --color-background: hsl(216, 75%, 24%);
+  --color-foreground: white;
+  --color-foreground-dark: black;
+  --color-primary: hsl(46, 100%, 64%);
+  --color-primary-dark: hsl(56, 100%, 38%);
+  --color-primary-inverse: hsl(56, 45%, 73%);
+  --color-secondary-dark: hsl(204, 60%, 20%);
+  --color-menu-background: var(--color-foreground);
+  --color-interactive: white;
+  --color-interactive-focus: hsl(59, 100%, 50%);
+  --color-interactive-focus-secondary: hsl(86, 100%, 50%);
+  --color-link-visited: hsl(277, 100%, 62%);
+  --height-menubar-full: 8vh;
+  --height-menubar-half: 4vh;
+  --gutter-welcome-person: 0.5rem;
+  --border-input-default: 1px solid black;
+  --border-input-default-thick: 2px solid var(--color-foreground);
+  --border-input-inverse: 1px solid var(--color-primary-inverse);
+  --border-input-inverse-thick: 2px solid var(--color-primary-inverse);
+  --border-input-inverse-thicker: 3px solid var(--color-primary-inverse);
+  --border-input-error: 2px solid red;
+
+  --font-serif: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  --font-display: serif;
+  --font-body: sans-serif;
+
+  /* body text or <p> scaling variable, max line length set */
+  --linelength-max: 980px;
+  --linelength-fluid: min(980px, calc(70% + 100px));
+
+  /* Fluid Font Scaling Variables */
+  --fluid-regular: clamp(100%, 1rem + 1vw, 2rem);
+  /* larger than body scaling variable */
+  --fluid-larger: clamp(100%, 1.5rem + 2vw, 4rem);
+  /* smaller than body scaling variable */
+  --fluid-smaller: clamp(100%, 0.5rem + 0.75vw, 1rem);
+  /* argument: relative to rem, font size scaling variable */
+
+  --body-max-width: 1200px;
+
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* **** start reset styles **** */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* address when the body background not filling the space the way you might expect it to */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+}
+
+/* The block display type there prevents those annoying line-height gaps that always kill me. And you almost never want any of these media blocks to be wider than the parent. */
+img,
+picture,
+video,
+canvas,
+svg,
+iframe,
+object {
+  display: block;
+  max-width: 100%;
+}
+
+/* bad news when a long word (like a URL) forces an element wide and borks a layout. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dl,
+dt,
+blockquote {
+  overflow-wrap: break-word;
+}
+
+#root {
+  /* ensures that any blending modes applied to the element or its descendants only affect that isolated group, rather than blending with elements outside the group. */
+  isolation: isolate;
+  /* max-width: var(--std-max-sitewidth); */
+  margin: 0 auto;
+}
+
+/* **** end reset styles **** */
+
+#root {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  max-width: 600px;
+  min-width: 320px;
+  max-width: var(--body-max-width);
   text-align: center;
   padding: 10px;
+  font-size: var(--fluid-regular);
+}
+
+a {
+  color: var(--color-foreground);
+}
+
+a:visited {
+  color: var(--color-link-visited);
+}
+
+header {
+  background-color: var(--color-primary);
+}
+
+section p, section h1, section h2 {
+  color: var(--color-primary);
+}
+
+p {
+  width: var(--linelength-fluid);
+  margin-left: auto;
+  margin-right: auto;
+
+  text-align: justify;
+  text-align-last: auto;
+}
+
+section {
+  padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+  flex: 1 1;
+  color: var(--color-foreground);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+section h2 {
+  font-family: var(--font-display);
+  /* font-weight: 300; */
+  /* letter-spacing: 0.1rem; */
+  font-size: var(--fluid-larger);
+  /* font-weight: 400; */
+  text-align: center;
+  padding: 0.3rem 0 0 0;
+}
+
+section p {
+  padding: 1rem 0 1rem 0;
+}
+
+h1 {
+  line-height: 1.1;
+  font-size: var(--fluid-larger);
+  text-align: center;
+  font-family: var(--font-display);
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* max-height: var(--menubarHeight); */
+  z-index: 99;
+
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+  color: var(--color-foreground);
+  padding: 0.3rem 0 0.5rem 0;
+}
+
+#root > section:first-of-type {
+  margin: calc(var(--height-menubar-half) + 0.8rem) 0 0.5rem 0;
+
+  /* width: 100%; */
+  /* padding: 0 var(--gutter-welcome-person) 0 var(--gutter-welcome-person); */
+  /* position: relative; */
+
+  /* display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: 1rem; */
+
 }
 
 .calendar {
-  max-width: 400px;
+  max-width: var(--body-max-width);
   margin: 0 auto;
   text-align: center;
   padding: 20px;
 }
 
 .container-header, .calendar-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* width: var(--linelength-fluid); */
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
 }
 
@@ -27,12 +266,16 @@ body {
 	font-weight: bold;
 }
 
-.container {
-  max-width: 400px;
+.month-title > .session {
+  color: var(--color-foreground);
+}
+
+/* .container {
+  max-width: var(--body-max-width);
   margin: 0 auto;
   text-align: center;
   padding: 20px;
-}
+} */
 
 .calendar-column {
   display: flex;
@@ -65,6 +308,14 @@ body {
   font-size: 0.75rem;
 }
 
+.calendar-box-headers {
+  border: 1px solid #ccc;
+  padding: 3px 0 3px 0;
+  text-align: center;
+  font-size: medium;
+  background: white;
+  color: black;
+}
 /* .day-number {
   position: relative;
   top: 5px;
@@ -76,9 +327,17 @@ body {
 .day-number {
   font-weight: bold;
   font-size: 12px;
+  color: white;
   /* position:relative;
   top: 0px;
   left: 0px; */
+}
+
+.year-day-number {
+  /* font-weight: bold; */
+  font-size: 12px;
+  color: white;
+
 }
 
 .box-text {
@@ -92,11 +351,6 @@ body {
   margin-top: 5px;
 } */
 
-p {
-  text-align: justify;
-  text-align-last: auto;
-}
-
 .navbar {
   display: flex;
   flex-flow: row nowrap;
@@ -105,6 +359,13 @@ p {
 }
 
 .session {
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+a.session {
+  color: var(--color-primary);
+  text-decoration: none;
   font-weight: bold;
 }
 
@@ -133,9 +394,14 @@ p {
   font-size: smaller;
 }
 
-.year-day-number {
-  /* font-weight: bold; */
-  font-size: 12px;
+.day-box-headers {
+	display: flex;
+  justify-content: center;
+	align-items: center;
+  padding: 5px;
+  text-align: center;
+  font-size: smaller;
+  color: white;
 }
 
 .year-box-text {
@@ -145,17 +411,25 @@ p {
   /* margin-top: 5px; */
 }
 
-.year-session {
+a.year-session {
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: bold;
-  color: red;
   font-size: 12px;
 }
 
+a.year-session a:visited {
+  color: var(--color-primary);
+}
+
+
 button {
-  background-color: transparent;
+  background-color: var(--color-interactive);
+  color: var(--color-foreground-dark);
   border: 1px black solid;
   border-radius: 5px;
+  font-size:medium;
+  padding: 5px;
 }
 
 button:hover {
@@ -164,4 +438,94 @@ button:hover {
 
 .smaller {
   font-size: smaller;
+}
+
+.moon-mini {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background-color: #fff;
+  transform: translateZ(0);
+  margin-top: var(--height-menubar-full);
+  
+  &::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    background-color: #222;
+    width: 50%; height: 100%;
+    animation: flip 2s 1s steps(2) infinite alternate;
+  }
+
+}
+.moon {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background-color: #fff;
+  transform: translateZ(0);
+  margin-top: var(--height-menubar-full);
+  
+  &::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    background-color: #222;
+    width: 50%; height: 100%;
+    animation: flip 2s 1s steps(2) infinite alternate;
+  }
+}
+
+.moon-disc {
+  transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
+  animation: rotate 4s linear infinite;
+  
+  &::before, &::after {
+    content: " ";
+    display: block;
+    transform-style: preserve-3d;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 4s;
+    position: absolute;
+    backface-visibility: hidden;
+  }
+  &::before {
+    background-color: #222;
+  }
+  &::after {
+    background-color: #fff;
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes rotate {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes flip {
+  0%   { left: 0; }
+  100% { left: 100%; }
+}
+
+.moon-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the text precisely */
+  font-size: 1.3em; /* Adjust the font size as needed */
+  font-weight: bold;
+  color: var(--color-primary); /* Text color */
 }

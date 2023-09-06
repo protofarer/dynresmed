@@ -1,0 +1,100 @@
+:root {
+  --std-color-foreground: hsl(0, 0%, 40%);
+  --std-color-background: hsl(0, 0%, 95%);
+
+  --std-color-interactive: hsl(38, 100%, 50%);
+  --std-color-interactive-focus: hsl(59, 100%, 50%);
+  --std-color-interactive-focus-secondary: hsl(86, 100%, 50%);
+
+  --std-color-border: hsl(0, 0%, 0%);
+  --std-color-invalid: hsl(0, 100%, 50%);
+
+  --std-color-links: var(--color-interactive);
+  --std-color-links-hover: var(--color-interactive-focus);
+  --std-color-links-active: var(--color-interactive-focus);
+
+  --std-max-sitewidth: 980px;
+  --std-min-body-lineLength: 30ch;
+  --std-max-body-lineLength: 70ch;
+
+  --std-font-body: system-ui;
+  --std-font-display: var(--font-body);
+  --std-body-lineheight: 1.5;
+
+  font-family: var(--std-font-body);
+  line-height: var(--std-body-lineheight);
+  font-weight: 400;
+  color-scheme: light;
+  color: var(--std-color-foreground);
+
+  /* From exemplar site */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* **** start reset styles **** */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* address when the body background not filling the space the way you might expect it to */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--std-color-background);
+}
+
+/* The block display type there prevents those annoying line-height gaps that always kill me. And you almost never want any of these media blocks to be wider than the parent. */
+img,
+picture,
+video,
+canvas,
+svg,
+iframe,
+object {
+  display: block;
+  max-width: 100%;
+}
+
+/* bad news when a long word (like a URL) forces an element wide and borks a layout. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dl,
+dt,
+blockquote {
+  overflow-wrap: break-word;
+}
+
+#root {
+  /* ensures that any blending modes applied to the element or its descendants only affect that isolated group, rather than blending with elements outside the group. */
+  isolation: isolate;
+  /* max-width: var(--std-max-sitewidth); */
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+/* **** end reset styles **** */

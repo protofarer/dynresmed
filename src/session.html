@@ -6,19 +6,15 @@
     <title>Resonant Dynamic Meditation Session Detail</title>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html">Home</a>
-        <a href="nextten.html">By Cycle</a>
-        <a href="monthly.html">By Month</a>
-        <a href="yearly.html">By Year</a>
-    </nav>
-    <div class="container">
-        <div class="container-header">
-            <button id="prevCycle">&lt;&lt; Previous</button>
-            <h2 id="containerTitle"></h2>
-            <button id="nextCycle">Next &gt;&gt;</button>
-        </div>
-        <div class="card" id="card"></div>
+    <div id="root">
+        <section>
+            <div class="container-header">
+                <button id="prevCycle">&lt;&lt; Previous</button>
+                <h2 id="containerTitle"></h2>
+                <button id="nextCycle">Next &gt;&gt;</button>
+            </div>
+            <div class="card" id="card"></div>
+        </section>
     </div>
     <script type="module" src="session.js" async></script>
 </body>

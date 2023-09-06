@@ -1,5 +1,13 @@
 import "./style.css";
-import { addPopStateListener, fetchSessionsForYear, initDate } from "./lib.js";
+import { 
+  addPopStateListener, 
+  fetchSessionsForYear, 
+  initDate, 
+  initNavbar 
+} from "./lib.js";
+
+const body = document.querySelector("body");
+initNavbar(body);
 
 const sessionText = await fetch(`data/sessionText.json`).then((response) => response.json());
 
@@ -7,6 +15,9 @@ const containerTitle = document.getElementById("containerTitle");
 const prevCycleButton = document.getElementById("prevCycle");
 const nextCycleButton = document.getElementById("nextCycle");
 const card = document.getElementById("card");
+
+
+
 
 let selectedDate = initDate();
 let sessions = await fetchSessionsForYear(selectedDate.getFullYear());
@@ -28,7 +39,7 @@ const updateInfo = () => {
   const n = Object.values(session)[0];
   const altDateText = `${new Date(datestring).toDateString().slice(0,10)}`;
 
-  card.innerHTML = `<strong>S${n}</strong> @ ${hours}:${minutes}<br/><p>${sessionText[n-1]}</p>`;
+  card.innerHTML = `<h2><strong>S${n}</strong> @ ${hours}:${minutes}<br/></h2><p>${sessionText[n-1]}</p>`;
 }
 
 nextCycleButton.addEventListener("click", async () => {

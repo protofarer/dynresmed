@@ -30,6 +30,18 @@ export async function fetchSessionsForYear(year) {
   return await fetch(`data/sessions/${year}.json`).then((response) => response.json());
 }
 
+export function addLoadListener() {
+  window.addEventListener("load", () => {
+    const root = document.getElementById('root');
+    root.style.display = 'flex';
+    console.log(`execute me`, )
+    
+
+    // const loading = document.getElementById('loading');
+    // loading.style.display = 'none';
+  })
+}
+
 export function addPopStateListener(selectedDate, updateFunction) {
   window.addEventListener("popstate", _ => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -48,4 +60,70 @@ export function parseDayStringFromDate(date) {
 	const padMonth = month < 10 ? `0${month}` : month;
 	const padDay = day < 10 ? `0${day}` : day;
 	return `${date.getFullYear()}-${padMonth}-${padDay}`
+}
+
+export function initNavbar(parentElement) {
+  const header = document.createElement("header");
+  const menu = document.createElement("menu");
+  const nav = document.createElement("nav");
+  nav.classList.add('navbar');
+  const anchorIndex = document.createElement("a");
+  anchorIndex.href = 'index.html';
+  anchorIndex.innerText = 'Home';
+  const anchorNextten = document.createElement("a");
+  anchorNextten.href = 'nextten.html';
+  anchorNextten.innerText = 'Cyclical';
+  const anchorMonthly = document.createElement("a");
+  anchorMonthly.href = 'monthly.html';
+  anchorMonthly.innerText = 'Monthly';
+  const anchorYearly = document.createElement("a");
+  anchorYearly.href = 'yearly.html';
+  anchorYearly.innerText = 'Yearly';
+
+  parentElement.appendChild(header);
+  header.appendChild(menu);
+  menu.appendChild(nav);
+  nav.appendChild(anchorIndex);
+  nav.appendChild(anchorNextten);
+  nav.appendChild(anchorMonthly);
+  nav.appendChild(anchorYearly);
+}
+
+export function initFooter(parentElement) {
+  const footer = document.createElement("footer");
+  const currentYear = new Date().getFullYear();
+  const text = `Copyright &copy; 2023 - ${currentYear} Kenny Baron`;
+  footer.innerText = text;
+  parentElement.appendChild(footer);
+}
+
+const MOON_COLORS = [
+  'violet',
+  'indigo',
+  'blue',
+  'teal',
+  'green',
+  'yellowgreen',
+  'yellow',
+  'orange',
+  'orangered',
+  'red',
+];
+export function setupMoonText() {
+  const moonText = document.querySelector(".moon-text");
+	let frame = 0;
+	let content = 0;
+	return () => {
+		if (frame >= 9 && frame < 19) {
+			content++;
+			moonText.textContent = `${content}`;
+      moonText.style.color = MOON_COLORS[(content % MOON_COLORS.length) - 1];
+		}
+		if (frame === 19) {
+			moonText.textContent = "";
+			frame = 0;
+			content = 0;
+		}
+		frame++
+	}
 }

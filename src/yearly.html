@@ -6,19 +6,25 @@
     <title>Resonant Dynamic Meditation Sessions by Year</title>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="index.html">Home</a>
-        <a href="nextten.html">By Cycle</a>
-        <a href="monthly.html">By Month</a>
-        <a href="yearly.html">By Year</a>
-    </nav>
-    <div class="calendar">
-        <div class="calendar-header">
-            <button id="prevYear">&lt;&lt; year</button>
-            <h2 id="calendarTitle"></h2>
-            <button id="nextYear">year &gt;&gt;</button>
-        </div>
-        <div class="calendar-container" id="calendarContainer"></div>
+    <div id="root">
+        <header>
+            <menu>
+                <nav class="navbar">
+                    <a href="index.html">Home</a>
+                    <a href="nextten.html">By Cycle</a>
+                    <a href="monthly.html">By Month</a>
+                    <a href="yearly.html">By Year</a>
+                </nav>
+            </menu>
+        </header>
+        <section>
+            <div class="calendar-header">
+                <button id="prevYear">&lt;&lt; year</button>
+                <h2 id="calendarTitle"></h2>
+                <button id="nextYear">year &gt;&gt;</button>
+            </div>
+            <div class="calendar-container" id="calendarContainer"></div>
+        </section>
     </div>
     <script type="module" src="yearly.js" async></script>
 </body>
