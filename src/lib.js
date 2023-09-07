@@ -128,3 +128,43 @@ export function setupMoonText() {
 		frame++
 	}
 }
+
+export function makeMiniMoon(parentElement) {
+  const moon = document.createElement("div");
+  moon.classList.add("mini-moon");
+
+  const moonDisc = document.createElement("div");
+  moonDisc.classList.add("mini-moon-disc");
+  moon.appendChild(moonDisc);
+
+  const diffusor = document.createElement("div");
+  diffusor.classList.add("mini-moon-diffusor");
+
+  parentElement.appendChild(moon);
+  parentElement.appendChild(diffusor);
+  return moon;
+}
+
+export function findFirstCycleStartIndexFromDate(date, sessions) {
+// find first cycle start index on or after given date
+  let startIdx = -1;
+  const day = date.getDate();
+  const padDay = day < 10 ? `0${day}` : day;
+  const month = date.getMonth() + 1;
+  const padMonth = month < 10 ? `0${month}` : month;
+  const matchString =  `${date.getFullYear()}-${padMonth}-${padDay}`;
+  startIdx = sessions.findIndex(x => Object.keys(x)[0].slice(0, 10) >= matchString) ;
+  return startIdx;
+}
+
+export function findPrevCycleStartIndexFromDate(date) {
+// find first cycle start index before given date
+  let startIdx = -1;
+  const day = date.getDate();
+  const padDay = day < 10 ? `0${day}` : day;
+  const month = date.getMonth() + 1;
+  const padMonth = month < 10 ? `0${month}` : month;
+  const matchString =  `${date.getFullYear()}-${padMonth}-${padDay}`;
+  startIdx = sessions.findIndex(x => Object.keys(x)[0].slice(0, 10) >= matchString) ;
+  return startIdx;
+}

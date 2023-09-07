@@ -47,6 +47,7 @@ const updateInfo = () => {
     dayCounter++;
   }
 
+  let maxGridCellHeight = 0;
   for (let day = 1; day <= daysInMonth; day++) {
     const dayBox = document.createElement("div");
     dayBox.classList.add("calendar-box");
@@ -84,7 +85,17 @@ const updateInfo = () => {
 
 		dayBox.appendChild(textElement);
     calendarGrid.appendChild(dayBox);
+
+    const height = dayBox.offsetHeight;
+    if (height > maxGridCellHeight)
+      maxGridCellHeight = height;
   }
+
+  const cells = document.querySelectorAll(".calendar-box");
+  cells.forEach(cell => {
+    cell.style.minHeight = `${maxGridCellHeight}px`;
+  });
+
 }
 
 prevMonthButton.addEventListener("click", async () => {

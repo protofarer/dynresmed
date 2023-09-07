@@ -1,5 +1,5 @@
 import "./style.css";
-import { initNavbar, addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate } from "./lib.js";
+import { findFirstCycleStartIndexFromDate, initNavbar, addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate } from "./lib.js";
 
 initNavbar(document.querySelector("body"));
 
@@ -16,7 +16,7 @@ const updateInfo = () => {
   containerTitle.innerHTML = `${selectedDate.toDateString()}`;
   containerGrid.innerHTML = "";
 
-  cycleStartIdx = findFirstCycleStartIndexFromDate(selectedDate);
+  cycleStartIdx = findFirstCycleStartIndexFromDate(selectedDate, sessions);
 
   let nSessions = 0;
   let sessionIdx = cycleStartIdx;
@@ -96,27 +96,3 @@ prevCycleButton.addEventListener("click", async () => {
 
 updateInfo();
 addPopStateListener(selectedDate, updateInfo);
-
-function findFirstCycleStartIndexFromDate(date) {
-// find first cycle start index on or after given date
-  let startIdx = -1;
-  const day = date.getDate();
-  const padDay = day < 10 ? `0${day}` : day;
-  const month = date.getMonth() + 1;
-  const padMonth = month < 10 ? `0${month}` : month;
-  const matchString =  `${date.getFullYear()}-${padMonth}-${padDay}`;
-  startIdx = sessions.findIndex(x => Object.keys(x)[0].slice(0, 10) >= matchString) ;
-  return startIdx;
-}
-
-function findPrevCycleStartIndexFromDate(date) {
-// find first cycle start index before given date
-  let startIdx = -1;
-  const day = date.getDate();
-  const padDay = day < 10 ? `0${day}` : day;
-  const month = date.getMonth() + 1;
-  const padMonth = month < 10 ? `0${month}` : month;
-  const matchString =  `${date.getFullYear()}-${padMonth}-${padDay}`;
-  startIdx = sessions.findIndex(x => Object.keys(x)[0].slice(0, 10) >= matchString) ;
-  return startIdx;
-}
