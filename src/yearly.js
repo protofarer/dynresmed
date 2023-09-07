@@ -1,7 +1,7 @@
 import { initNavbar, fetchSessionsForYear, parseDayStringFromDate } from "./lib.js";
 import "./style.css";
 
-initNavbar(body);
+initNavbar(document.querySelector("body"));
 
 const DAYS_OF_WEEK = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -43,6 +43,7 @@ const makeMonth = (selectedMonth, sessions) => {
 	for (let i = 0; i < DAYS_OF_WEEK.length; i++) {
 		const dayOfWeekBox = document.createElement("div");
 		dayOfWeekBox.classList.add("day-box-headers");
+		dayOfWeekBox.classList.add("day-box");
 		dayOfWeekBox.textContent = DAYS_OF_WEEK[i];
 		monthGrid.appendChild(dayOfWeekBox);
 	}
@@ -73,29 +74,27 @@ const makeMonth = (selectedMonth, sessions) => {
 		const session = sessions.find(x => Object.keys(x)[0].slice(0, 10) === dateString);
 
 		if (session) {
-			const moon = document.createElement("div");
-			moon.classList.add("moon-mini");
-			moon.style.height = "0.5em";
-			moon.style.width = "0.5em";
-			moon.style.border = 'none';
-
-			const disc = document.createElement("div");
-			disc.classList.add("moon-mini-disc");
-			moon.appendChild(disc);
-
+			// const moon = document.createElement("div");
+			// moon.classList.add("moon-mini");
+			// moon.style.height = "0.5em";
+			// moon.style.width = "0.5em";
+			// moon.style.border = 'none';
+			// const disc = document.createElement("div");
+			// disc.classList.add("moon-mini-disc");
+			// moon.appendChild(disc);
 			// dayBox.style.lineHeight = "0";
 			// dayBox.style.padding = 0;
 			// dayBox.style.fontSize = "1em";
-			dayBox.appendChild(moon);
+			// dayBox.appendChild(moon);
 
-			// const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
-			// const n = Object.values(session)[0];
-			// const sessionLink = document.createElement("a");
-			// sessionLink.classList.add("year-session");
-			// sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
+			const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
+			const n = Object.values(session)[0];
+			const sessionLink = document.createElement("a");
+			sessionLink.classList.add("year-session");
+			sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
 			
-			// sessionLink.textContent = `S${n}`;
-			// dayBox.appendChild(sessionLink);
+			sessionLink.textContent = `S${n}`;
+			dayBox.appendChild(sessionLink);
 		} else {
 			const dayNumber = document.createElement("span");
 			dayNumber.classList.add("year-day-number");

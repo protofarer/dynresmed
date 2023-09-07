@@ -38,7 +38,8 @@
   --color-foreground: white;
   --color-foreground-dark: black;
   --color-primary: hsl(46, 100%, 64%);
-  --color-primary-dark: hsl(56, 100%, 38%);
+  --color-primary-dark: hsl(46, 100%, 38%);
+  --color-primary-light: hsl(46, 50%, 95%);
   --color-primary-inverse: hsl(56, 45%, 73%);
   --color-secondary: hsl(201, 100%, 60%);
   --color-secondary-light: hsl(201, 100%, 89%);
@@ -69,6 +70,8 @@
   /* Fluid Font Scaling Variables */
   --fluid-regular: clamp(100%, 1rem + 1vw, 2rem);
   /* larger than body scaling variable */
+  --fluid-large: clamp(100%, 1.25rem + 2vw, 3.5rem);
+  /* largerx2 than body scaling variable */
   --fluid-larger: clamp(100%, 1.5rem + 2vw, 4rem);
   /* smaller than body scaling variable */
   --fluid-smaller: clamp(100%, 0.5rem + 0.75vw, 1rem);
@@ -145,7 +148,7 @@ blockquote {
 #root {
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
+  /* align-items: center; */
 
 }
 
@@ -169,7 +172,7 @@ a:visited {
 }
 
 header {
-  background-color: var(--color-secondary-light);
+  background-color: var(--color-primary-light);
 }
 
 section p, section h1, section h2 {
@@ -191,15 +194,13 @@ section {
   color: var(--color-foreground);
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
 }
 
 section h2 {
   font-family: var(--font-display);
   /* font-weight: 300; */
   /* letter-spacing: 0.1rem; */
-  font-size: var(--fluid-larger);
-  /* font-weight: 400; */
+  font-size: var(--fluid-large);
   text-align: center;
   padding: 0.3rem 0 0 0;
 }
@@ -261,6 +262,12 @@ header {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.calendar-container {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
 .month-title {
@@ -337,7 +344,7 @@ header {
 
 .year-day-number {
   /* font-weight: bold; */
-  font-size: 12px;
+  font-size: 1em;
   color: white;
 
 }
@@ -378,7 +385,7 @@ a.session {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 10px;
-  padding: 8px 0 8px 0;
+  padding: 8px;
 }
 
 .month-grid {
@@ -391,19 +398,9 @@ a.session {
 	display: flex;
   justify-content: center;
 	align-items: center;
-  padding: 5px;
+  padding: 3px;
   text-align: center;
-  font-size: smaller;
-}
-
-.day-box-headers {
-	display: flex;
-  justify-content: center;
-	align-items: center;
-  padding: 5px;
-  text-align: center;
-  font-size: smaller;
-  color: white;
+  font-size: 1em;
 }
 
 .year-box-text {
@@ -417,7 +414,7 @@ a.year-session {
   color: var(--color-primary);
   text-decoration: none;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 1em;
 }
 
 a.year-session a:visited {
@@ -467,9 +464,9 @@ button:hover {
 .moon-container {
   position: relative;
   margin-top: var(--height-menubar-full);
-  /* display: flex;
+  display: flex;
   justify-content: center;
-  align-items: center; */
+  align-items: center;
 }
 
 .moon {
