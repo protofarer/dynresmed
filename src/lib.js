@@ -1,11 +1,3 @@
-export function parseDateFromDayString(dayString) {
-    const parts = dayString.split("-");
-    const year = parseInt(parts[0], 10);
-    const monthIndex = parseInt(parts[1], 10) - 1; // Months are zero-based
-    const day = parseInt(parts[2], 10);
-    return new Date(year, monthIndex, day);
-}
-
 export function initDate() {
   const urlParams = new URLSearchParams(window.location.search);
   const dayParam = urlParams.get("date");
@@ -17,6 +9,42 @@ export function initDate() {
   }
   history.replaceState({}, '', `?date=${date.toISOString().slice(0,10)}`);
   return date;
+}
+
+export function initNavbar(parentElement) {
+  const header = document.createElement("header");
+  const menu = document.createElement("menu");
+  const nav = document.createElement("nav");
+  nav.classList.add('navbar');
+  const anchorIndex = document.createElement("a");
+  anchorIndex.href = 'index.html';
+  anchorIndex.innerText = 'Home';
+  const anchorNextten = document.createElement("a");
+  anchorNextten.href = 'nextten.html';
+  anchorNextten.innerText = 'Cyclical';
+  const anchorMonthly = document.createElement("a");
+  anchorMonthly.href = 'monthly.html';
+  anchorMonthly.innerText = 'Monthly';
+  const anchorYearly = document.createElement("a");
+  anchorYearly.href = 'yearly.html';
+  anchorYearly.innerText = 'Yearly';
+
+  parentElement.insertBefore(header, parentElement.firstChild);
+  header.appendChild(menu);
+  menu.appendChild(nav);
+  nav.appendChild(anchorIndex);
+  nav.appendChild(anchorNextten);
+  nav.appendChild(anchorMonthly);
+  nav.appendChild(anchorYearly);
+}
+
+
+export function parseDateFromDayString(dayString) {
+    const parts = dayString.split("-");
+    const year = parseInt(parts[0], 10);
+    const monthIndex = parseInt(parts[1], 10) - 1; // Months are zero-based
+    const day = parseInt(parts[2], 10);
+    return new Date(year, monthIndex, day);
 }
 
 export async function fetchSessionsForYearAndAdjacent(year) {
@@ -60,33 +88,6 @@ export function parseDayStringFromDate(date) {
 	const padMonth = month < 10 ? `0${month}` : month;
 	const padDay = day < 10 ? `0${day}` : day;
 	return `${date.getFullYear()}-${padMonth}-${padDay}`
-}
-
-export function initNavbar(parentElement) {
-  const header = document.createElement("header");
-  const menu = document.createElement("menu");
-  const nav = document.createElement("nav");
-  nav.classList.add('navbar');
-  const anchorIndex = document.createElement("a");
-  anchorIndex.href = 'index.html';
-  anchorIndex.innerText = 'Home';
-  const anchorNextten = document.createElement("a");
-  anchorNextten.href = 'nextten.html';
-  anchorNextten.innerText = 'Cyclical';
-  const anchorMonthly = document.createElement("a");
-  anchorMonthly.href = 'monthly.html';
-  anchorMonthly.innerText = 'Monthly';
-  const anchorYearly = document.createElement("a");
-  anchorYearly.href = 'yearly.html';
-  anchorYearly.innerText = 'Yearly';
-
-  parentElement.insertBefore(header, parentElement.firstChild);
-  header.appendChild(menu);
-  menu.appendChild(nav);
-  nav.appendChild(anchorIndex);
-  nav.appendChild(anchorNextten);
-  nav.appendChild(anchorMonthly);
-  nav.appendChild(anchorYearly);
 }
 
 export function initFooter(parentElement) {
