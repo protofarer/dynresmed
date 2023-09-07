@@ -6,8 +6,7 @@ import {
   initNavbar 
 } from "./lib.js";
 
-const body = document.querySelector("body");
-initNavbar(body);
+initNavbar(document.querySelector("body"));
 
 const sessionText = await fetch(`data/sessionText.json`).then((response) => response.json());
 

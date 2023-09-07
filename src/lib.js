@@ -80,7 +80,7 @@ export function initNavbar(parentElement) {
   anchorYearly.href = 'yearly.html';
   anchorYearly.innerText = 'Yearly';
 
-  parentElement.appendChild(header);
+  parentElement.insertBefore(header, parentElement.firstChild);
   header.appendChild(menu);
   menu.appendChild(nav);
   nav.appendChild(anchorIndex);
@@ -91,24 +91,25 @@ export function initNavbar(parentElement) {
 
 export function initFooter(parentElement) {
   const footer = document.createElement("footer");
-  const currentYear = new Date().getFullYear();
-  const text = `Copyright &copy; 2023 - ${currentYear} Kenny Baron`;
-  footer.innerText = text;
+  // const currentYear = new Date().getFullYear();
+  const text = `o`;
+  footer.innerHTML = text;
   parentElement.appendChild(footer);
 }
 
-const MOON_COLORS = [
-  'violet',
-  'indigo',
-  'blue',
-  'teal',
-  'green',
-  'yellowgreen',
-  'yellow',
-  'orange',
-  'orangered',
-  'red',
-];
+// const MOON_COLORS = [
+//   'violet',
+//   'indigo',
+//   'blue',
+//   'teal',
+//   'green',
+//   'yellowgreen',
+//   'yellow',
+//   'orange',
+//   'orangered',
+//   'red',
+// ];
+
 export function setupMoonText() {
   const moonText = document.querySelector(".moon-text");
 	let frame = 0;
@@ -117,7 +118,7 @@ export function setupMoonText() {
 		if (frame >= 9 && frame < 19) {
 			content++;
 			moonText.textContent = `${content}`;
-      moonText.style.color = MOON_COLORS[(content % MOON_COLORS.length) - 1];
+      // moonText.style.color = MOON_COLORS[(content % MOON_COLORS.length) - 1];
 		}
 		if (frame === 19) {
 			moonText.textContent = "";

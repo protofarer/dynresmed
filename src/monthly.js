@@ -1,5 +1,7 @@
 import "./style.css";
-import { addPopStateListener, fetchSessionsForYear, initDate } from "./lib.js";
+import { addPopStateListener, fetchSessionsForYear, initDate, initNavbar } from "./lib.js";
+
+initNavbar(document.querySelector("body"));
 
 const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 

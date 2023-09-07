@@ -1,5 +1,7 @@
 import "./style.css";
-import { addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate } from "./lib.js";
+import { initNavbar, addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate } from "./lib.js";
+
+initNavbar(document.querySelector("body"));
 
 const containerTitle = document.getElementById("containerTitle");
 const containerGrid = document.getElementById("containerGrid");

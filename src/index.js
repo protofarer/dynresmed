@@ -1,8 +1,8 @@
-import { initNavbar, setupMoonText } from "./lib.js";
+import { initNavbar, setupMoonText, initFooter } from "./lib.js";
 import './style.css';
 
-const body = document.querySelector("body");
-initNavbar(body);
+const parent = document.querySelector("body");
+initNavbar(parent);
 
 const data = await fetch('data/intro.json').then(response => response.json());
 
@@ -12,4 +12,4 @@ introPara.innerHTML = data.intro;
 const medPara = document.getElementById('med');
 medPara.innerHTML = data.meditate;
 
-setInterval(setupMoonText(), 200);
+// setInterval(setupMoonText(), 200);

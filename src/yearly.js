@@ -1,5 +1,7 @@
-import { fetchSessionsForYear, parseDayStringFromDate } from "./lib.js";
+import { initNavbar, fetchSessionsForYear, parseDayStringFromDate } from "./lib.js";
 import "./style.css";
+
+initNavbar(body);
 
 const DAYS_OF_WEEK = ["S", "M", "T", "W", "T", "F", "S"];
 

@@ -40,7 +40,9 @@
   --color-primary: hsl(46, 100%, 64%);
   --color-primary-dark: hsl(56, 100%, 38%);
   --color-primary-inverse: hsl(56, 45%, 73%);
-  --color-secondary-dark: hsl(204, 60%, 20%);
+  --color-secondary: hsl(201, 100%, 60%);
+  --color-secondary-light: hsl(201, 100%, 89%);
+  --color-secondary-dark: hsl(201, 100%, 30%);
   --color-menu-background: var(--color-foreground);
   --color-interactive: white;
   --color-interactive-focus: hsl(59, 100%, 50%);
@@ -167,11 +169,11 @@ a:visited {
 }
 
 header {
-  background-color: var(--color-primary);
+  background-color: var(--color-secondary-light);
 }
 
 section p, section h1, section h2 {
-  color: var(--color-primary);
+  color: var(--color-foreground);
 }
 
 p {
@@ -424,7 +426,7 @@ a.year-session a:visited {
 
 
 button {
-  background-color: var(--color-interactive);
+  background-color: var(--color-secondary-light);
   color: var(--color-foreground-dark);
   border: 1px black solid;
   border-radius: 5px;
@@ -462,16 +464,24 @@ button:hover {
   }
 
 }
+.moon-container {
+  position: relative;
+  margin-top: var(--height-menubar-full);
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+}
+
 .moon {
-  width: 100px;
-  height: 100px;
-  border: 2px solid #ffffff;
+  width: 10rem;
+  height: 10rem;
+  /* border: 1px solid #fff; */
   border-radius: 50%;
   overflow: hidden;
   position: relative;
   background-color: #fff;
   transform: translateZ(0);
-  margin-top: var(--height-menubar-full);
+  margin: 20px;
   
   &::before {
     content: " ";
@@ -479,8 +489,41 @@ button:hover {
     position: absolute;
     top: 0; left: 0;
     background-color: #222;
-    width: 50%; height: 100%;
-    animation: flip 2s 1s steps(2) infinite alternate;
+    width: 50%; 
+    height: 100%;
+    animation: flip 12s 6s steps(2) infinite alternate;
+  }
+}
+
+.moon-diffusor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* top: -1rem;
+  left: -1rem; */
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle farthest-side,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 55%,
+    rgba(255, 255, 255, 0.35) 56%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: changeBrightness 24s linear infinite;
+}
+
+@keyframes changeBrightness {
+  0%, 100% {
+    filter: brightness(0);
+  }
+  15%, 75% {
+    filter: brightness(0.7);
+  }
+  50% {
+    filter: brightness(1);
   }
 }
 
@@ -488,7 +531,7 @@ button:hover {
   transform-style: preserve-3d;
   width: 100%;
   height: 100%;
-  animation: rotate 4s linear infinite;
+  animation: rotate 24s linear infinite;
   
   &::before, &::after {
     content: " ";
@@ -525,7 +568,63 @@ button:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* Center the text precisely */
-  font-size: 1.3em; /* Adjust the font size as needed */
+  font-size: 2em; /* Adjust the font size as needed */
   font-weight: bold;
   color: var(--color-primary); /* Text color */
+  /* animation: rotate 4s linear infinite; */
 }
+
+@keyframes changeText {
+  0%, 100% { content: ""; }
+  49% { content: ""; }
+  50% { content: "1"; }
+  55% { content: "2"; }
+  60% { content: "3"; }
+  65% { content: "4"; }
+  70% { content: "5"; }
+  75% { content: "6"; }
+  80% { content: "7"; }
+  85% { content: "8"; }
+  90% { content: "9"; }
+  95% { content: "10"; }
+}
+
+@keyframes fadeText {
+  0%, 52%, 57%, 62%, 67%, 72%, 77%, 82%, 87%, 92%, 97%, 100% { opacity: 0; }
+  50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95% { opacity: 1; }
+}
+
+.moon-text::before {
+  content: "1";
+  /* animation: changeText 12s steps(10) infinite, fadeText 12s linear infinite; */
+  animation: changeText 24s linear infinite, fadeText 24s linear infinite;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0;}
+  100% { opacity: 1;}
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1;}
+  100% { opacity: 0;}
+}
+
+
+  /* &::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 0, 0, 1) 20%, 
+      rgba(0, 255, 0, 0) 40%
+    );
+    animation: brightness 6s linear infinite;
+  } */
