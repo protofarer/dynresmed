@@ -6,7 +6,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "dev": "vite serve src --host",
+    "dev": "vite serve src --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -20,8 +20,7 @@
     "meditation",
     "schedule",
     "planning",
-    "lunar",
-    "noetics"
+    "lunar"
   ],
   "author": "kenny baron",
   "license": "ISC",

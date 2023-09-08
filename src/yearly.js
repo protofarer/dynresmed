@@ -1,4 +1,4 @@
-import { initNavbar, fetchSessionsForYear, parseDayStringFromDate, makeMiniMoon } from "./lib.js";
+import { miniMoonWithLink, initNavbar, fetchSessionsForYear, parseDayStringFromDate, makeMiniMoon } from "./lib.js";
 import "./style.css";
 
 initNavbar(document.querySelector("body"));
@@ -74,15 +74,7 @@ const makeMonth = (selectedMonth, sessions) => {
 		const session = sessions.find(x => Object.keys(x)[0].slice(0, 10) === dateString);
 
 		if (session) {
-			const moon = makeMiniMoon(dayBox);
-			const sessionLink = document.createElement("a");
-			sessionLink.classList.add("mini-moon-text");
-
-			const n = Object.values(session)[0];
-			const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
-			sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
-			sessionLink.textContent = `${n}`;
-			moon.appendChild(sessionLink);
+			miniMoonWithLink(dayBox, session);
 			
 			// sessionLink.textContent = `S${n}`;
 			// dayBox.appendChild(sessionLink);

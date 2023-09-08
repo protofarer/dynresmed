@@ -171,8 +171,16 @@ a:visited {
   color: var(--color-link-visited);
 }
 
+.navbar > a {
+  color: var(--color-background);
+}
+
+.navbar > a:visited {
+  color: var(--color-background);
+}
+
 header {
-  background-color: var(--color-primary-light);
+  background-color: #ccc;
 }
 
 section p, section h1, section h2 {
@@ -180,7 +188,7 @@ section p, section h1, section h2 {
 }
 
 p {
-  width: var(--linelength-fluid);
+  /* width: var(--linelength-fluid); */
   margin-left: auto;
   margin-right: auto;
 
@@ -194,6 +202,7 @@ section {
   color: var(--color-foreground);
   display: flex;
   flex-flow: column nowrap;
+  align-items: center;
 }
 
 section h2 {
@@ -203,6 +212,13 @@ section h2 {
   font-size: var(--fluid-large);
   text-align: center;
   padding: 0.3rem 0 0 0;
+}
+
+section h3 {
+  font-family: var(--font-display);
+  text-align: center;
+  padding: 0.3rem 0 0 0;
+
 }
 
 section p {
@@ -244,13 +260,13 @@ header {
 
 .container-header, .calendar-header {
   /* width: var(--linelength-fluid); */
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 10px;
+  margin-bottom: 0.5em;
 
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content:space-between;
   gap: 10px;
 }
 
@@ -279,6 +295,7 @@ header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 1px;
+  width: 100%;
 }
 
 .calendar-box {
@@ -386,12 +403,13 @@ a.year-session a:visited {
 
 
 button {
-  background-color: var(--color-secondary-light);
+  /* background-color: var(--color-secondary-light); */
+  background-color: #ccc;
   color: var(--color-foreground-dark);
   border: 1px black solid;
-  border-radius: 5px;
+  border-radius: 0.75em;
   font-size:medium;
-  padding: 5px;
+  padding:  0.2em 0.6em;
 }
 
 button:hover {
@@ -561,6 +579,13 @@ button:hover {
   100% { opacity: 0;}
 }
 
+.container-mini-moon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0.3em;
+}
+
 .mini-moon {
   width: 1em;
   height: 1em;
@@ -623,8 +648,14 @@ button:hover {
   font-size: 0.7em; /* Adjust the font size as needed */
   font-weight: bold;
   color: var(--color-primary); /* Text color */
+  text-decoration: none;
+  pointer-events: none;
   /* animation: rotate 4s linear infinite; */
 }
+
+/* a.mini-moon-text:visited {
+  color: var(--color-primary);
+} */
 
 .mini-moon-diffusor {
   position: absolute;

@@ -1,5 +1,5 @@
 import "./style.css";
-import { findFirstCycleStartIndexFromDate, initNavbar, addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate } from "./lib.js";
+import { findFirstCycleStartIndexFromDate, initNavbar, addPopStateListener, fetchSessionsForYearAndAdjacent, parseDateFromDayString, initDate, miniMoonWithLink } from "./lib.js";
 
 initNavbar(document.querySelector("body"));
 
@@ -13,7 +13,8 @@ let sessions = await fetchSessionsForYearAndAdjacent(selectedDate.getFullYear())
 let cycleStartIdx = -1;
 
 const updateInfo = () => {
-  containerTitle.innerHTML = `${selectedDate.toDateString()}`;
+  const title = selectedDate.toDateString();
+  containerTitle.innerHTML = `${title}`;
   containerGrid.innerHTML = "";
 
   cycleStartIdx = findFirstCycleStartIndexFromDate(selectedDate, sessions);
@@ -33,11 +34,12 @@ const updateInfo = () => {
     const datestring = `${Object.keys(session)[0]}`; // Replace with your content
 
     // Session link element
-    const sessionLink = document.createElement("a");
-    sessionLink.classList.add("session");
-    sessionLink.href = `session.html?date=${datestring.slice(0,10)}`;
-    sessionLink.textContent = `S${n}`;
-    dayBox.appendChild(sessionLink);
+    // const sessionLink = document.createElement("a");
+    // sessionLink.classList.add("session");
+    // sessionLink.href = `session.html?date=${datestring.slice(0,10)}`;
+    // sessionLink.textContent = `S${n}`;
+    // dayBox.appendChild(sessionLink);
+    dayBox.appendChild(miniMoonWithLink(dayBox, session));
     
     // Session info element
     const hours = datestring.slice(11, 13);

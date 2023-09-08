@@ -1,5 +1,5 @@
 import "./style.css";
-import { addPopStateListener, fetchSessionsForYear, initDate, initNavbar } from "./lib.js";
+import { addPopStateListener, fetchSessionsForYear, initDate, initNavbar, miniMoonWithLink } from "./lib.js";
 
 initNavbar(document.querySelector("body"));
 
@@ -68,19 +68,20 @@ const updateInfo = () => {
 		const padDay = day < 10 ? `0${day}` : day;
 		const session = sessions.find(x => Object.keys(x)[0].slice(0, 10) === `${currentYear}-${padMonth}-${padDay}`);
     if (session) {
-			const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
-      const hours = fullDatestring.slice(11, 13);
-      const minutes = fullDatestring.slice(14, 16);
-			const n = Object.values(session)[0];
+      miniMoonWithLink(dayBox, session);
+			// const fullDatestring = `${Object.keys(session)[0]}`; // Replace with your content
+			// const n = Object.values(session)[0];
 
-			const sessionLink = document.createElement("a");
-			sessionLink.classList.add("year-session");
-			sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
+			// const sessionLink = document.createElement("a");
+			// sessionLink.classList.add("year-session");
+			// sessionLink.href = `session.html?date=${fullDatestring.slice(0,10)}`;
 			
-			sessionLink.textContent = `S${n}`;
-			dayBox.appendChild(sessionLink);
+			// sessionLink.textContent = `S${n}`;
+			// dayBox.appendChild(sessionLink);
 
-      textElement.innerHTML = `${hours}:${minutes}`;
+      // const hours = fullDatestring.slice(11, 13);
+      // const minutes = fullDatestring.slice(14, 16);
+      // textElement.innerHTML = `${hours}:${minutes}`;
     }
 
 		dayBox.appendChild(textElement);

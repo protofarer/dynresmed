@@ -5,10 +5,9 @@ import {
   initDate, 
   initNavbar 
 } from "./lib.js";
+import sessionText from './data/sessionText.json';
 
 initNavbar(document.querySelector("body"));
-
-const sessionText = await fetch(`data/sessionText.json`).then((response) => response.json());
 
 const containerTitle = document.getElementById("containerTitle");
 const prevCycleButton = document.getElementById("prevCycle");
@@ -38,7 +37,7 @@ const updateInfo = () => {
   const n = Object.values(session)[0];
   const altDateText = `${new Date(datestring).toDateString().slice(0,10)}`;
 
-  card.innerHTML = `<h2><strong>S${n}</strong> @ ${hours}:${minutes}<br/></h2><p>${sessionText[n-1]}</p>`;
+  card.innerHTML = `<h2><strong>Session ${n}</strong> @ ${hours}:${minutes}<br/></h2><p>${sessionText[n-1]}</p>`;
 }
 
 nextCycleButton.addEventListener("click", async () => {

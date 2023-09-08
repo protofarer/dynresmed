@@ -48,14 +48,14 @@ export function parseDateFromDayString(dayString) {
 }
 
 export async function fetchSessionsForYearAndAdjacent(year) {
-  const sessions1 = await fetch(`data/sessions/${year - 1}.json`).then((response) => response.json());
-  const sessions2 = await fetch(`data/sessions/${year}.json`).then((response) => response.json());
-  const sessions3 = await fetch(`data/sessions/${year + 1}.json`).then((response) => response.json());
+  const sessions1 = await fetch(`/sessions/${year - 1}.json`).then((response) => response.json());
+  const sessions2 = await fetch(`/sessions/${year}.json`).then((response) => response.json());
+  const sessions3 = await fetch(`/sessions/${year + 1}.json`).then((response) => response.json());
   return [...sessions1, ...sessions2, ...sessions3];
 }
 
 export async function fetchSessionsForYear(year) {
-  return await fetch(`data/sessions/${year}.json`).then((response) => response.json());
+  return await fetch(`/sessions/${year}.json`).then((response) => response.json());
 }
 
 export function addLoadListener() {
@@ -131,7 +131,10 @@ export function setupMoonText() {
 }
 
 export function makeMiniMoon(parentElement) {
-  const moon = document.createElement("div");
+  const container = document.createElement('div');
+  container.classList.add("container-mini-moon");
+
+  const moon = document.createElement("a");
   moon.classList.add("mini-moon");
 
   const moonDisc = document.createElement("div");
@@ -141,9 +144,25 @@ export function makeMiniMoon(parentElement) {
   const diffusor = document.createElement("div");
   diffusor.classList.add("mini-moon-diffusor");
 
-  parentElement.appendChild(moon);
-  parentElement.appendChild(diffusor);
-  return moon;
+  container.appendChild(moon);
+  container.appendChild(diffusor);
+  parentElement.appendChild(container);
+  return { container, moon };
+}
+
+export function miniMoonWithLink(parentElement, sessionObject) {
+  let { container, moon } = makeMiniMoon(parentElement);
+
+  const fullDatestring = `${Object.keys(sessionObject)[0]}`; // Replace with your content
+  moon.href = `session.html?date=${fullDatestring.slice(0,10)}`;
+
+  const label = document.createElement("span");
+  label.classList.add("mini-moon-text");
+  const n = Object.values(sessionObject)[0];
+  label.textContent = `${n}`;
+  container.appendChild(label);
+
+  return container;
 }
 
 export function findFirstCycleStartIndexFromDate(date, sessions) {
