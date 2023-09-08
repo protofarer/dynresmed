@@ -173,6 +173,8 @@ a:visited {
 
 .navbar > a {
   color: var(--color-background);
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .navbar > a:visited {
@@ -266,7 +268,7 @@ header {
   margin-bottom: 0.5em;
 
   display: flex;
-  justify-content:space-between;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -312,7 +314,7 @@ header {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   gap: 3px;
 
   border: 1px solid #ccc;
@@ -438,6 +440,7 @@ button:hover {
   background-color: #fff;
   transform: translateZ(0);
   margin: 20px;
+  font-size: 1em;
   
   &::before {
     content: " ";
