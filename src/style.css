@@ -251,7 +251,7 @@ header {
 }
 
 #root > section:first-of-type {
-  margin: calc(var(--height-menubar-half) + 0.8rem) 0 0.5rem 0;
+  /* margin: calc(var(--height-menubar-half) + 0.8rem) 0 0.5rem 0; */
 }
 
 .calendar {
@@ -503,7 +503,7 @@ button:hover {
   border-radius: 50%;
   background: radial-gradient(
     circle farthest-side,
-    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.42) 0%,
     /* rgba(255, 255, 255, 0) 55%, */
     /* rgba(255, 255, 255, 0.35) 56%, */
     rgba(255, 255, 255, 0) 100%
@@ -516,19 +516,13 @@ button:hover {
   0% {
     filter: brightness(0.1);
   }
-  20% {
+  15% {
     filter: brightness(0.4);
-  }
-  30% {
-    filter: brightness(0.6);
   }
   50% {
     filter: brightness(1);
   }
-  70% {
-    filter: brightness(0.7);
-  }
-  80% {
+  85% {
     filter: brightness(0.4);
   }
   100% {
@@ -689,4 +683,9 @@ a.year-session {
 
 a.year-session a:visited {
   color: var(--color-primary);
+}
+
+#next-session {
+  color: var(--color-primary);
+  margin: 0.5em;
 }

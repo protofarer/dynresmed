@@ -53,6 +53,11 @@ let sessionDates = [];
 let cycleStartIdx = findFirstCycleStartIndexFromDate(selectedDate, sessions);
 let nSessions = 0;
 let sessionIdx = cycleStartIdx;
+
+const nextSessionLink = document.querySelector('#next-session');
+nextSessionLink.href = `session?date=${selectedDate.toISOString().slice(0,10)}`;
+nextSessionLink.innerText = `Upcoming session no. ${Object.values(sessions[cycleStartIdx])[0]} on ${new Date(Object.keys(sessions[cycleStartIdx])[0].slice(0,10)).toDateString().slice(0, 10)}`
+
 while (nSessions < 10) {
   sessionDates.push(Object.keys(sessions[sessionIdx])[0].slice(0,10));
   sessionIdx++;
