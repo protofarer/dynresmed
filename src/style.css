@@ -156,11 +156,12 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  /* padding: 10px; */
   min-width: 320px;
   max-width: var(--body-max-width);
   text-align: center;
-  padding: 10px;
   font-size: var(--fluid-regular);
+  margin: auto;
 }
 
 a {
