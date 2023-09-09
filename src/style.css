@@ -251,7 +251,7 @@ header {
 }
 
 #root > section:first-of-type {
-  /* margin: calc(var(--height-menubar-half) + 0.8rem) 0 0.5rem 0; */
+  margin: calc(var(--height-menubar-half) + 0.8rem) 0 0.5rem 0;
 }
 
 .calendar {
@@ -271,6 +271,7 @@ header {
   display: flex;
   justify-content: center;
   gap: 10px;
+  line-height: 1;
 }
 
 .calendar-container {
@@ -412,7 +413,7 @@ button {
   border: 1px black solid;
   border-radius: 0.75em;
   font-size:medium;
-  padding:  0.2em 0.6em;
+  padding: 0.3em 1em;
 }
 
 button:hover {
@@ -687,5 +688,5 @@ a.year-session a:visited {
 
 #next-session {
   color: var(--color-primary);
-  margin: 0.5em;
+  margin: 1em 0 -1em 0;
 }
